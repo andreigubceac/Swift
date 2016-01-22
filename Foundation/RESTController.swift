@@ -48,6 +48,7 @@ class RESTController : Manager {
     
     convenience init(baseUrl : String) {
         self.init(queue : nil)
+        self.baseUrl = baseUrl
     }
     
     let defaultManager: Alamofire.Manager = {
@@ -74,7 +75,7 @@ class RESTController : Manager {
         return urlString
     }
     
-    private func request(method: Alamofire.Method, _ URLString: URLStringConvertible, parameters: [ String : AnyObject ]? = nil, encoding: ParameterEncoding = .URL, resultBlock : RESTResultBlock ) -> Request {
+    func requestJSON(method: Alamofire.Method, _ URLString: URLStringConvertible, parameters: [ String : AnyObject ]? = nil, encoding: ParameterEncoding = .URL, resultBlock : RESTResultBlock ) -> Request {
         var headers : [String : String]? = nil
         if self.token != nil {
             headers = [:]

@@ -15,8 +15,6 @@ class StorageController {
 
     private let operationQueue = NSOperationQueue()
 
-    let rest = RESTController(baseUrl: "");
-    
     deinit {
         /*Stop All connections*/
         operationQueue.cancelAllOperations()

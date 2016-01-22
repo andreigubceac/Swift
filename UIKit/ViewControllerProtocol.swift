@@ -23,3 +23,32 @@ protocol ViewControllerProtocol
 }
 
 
+extension UIViewController {
+    
+    var storage : StorageController? {
+        get {
+            return AppDelegate.shared.storage
+        }
+    }
+    
+    class func dismissViewControllerSelector() -> Selector {
+        return NSSelectorFromString("dismissViewControllerAnimated");
+    }
+    
+    func dismissViewControllerAnimated() {
+        self.dismissViewControllerAnimated(true , completion: nil)
+    }
+    
+    
+    func loadData(forced : Bool) {
+        self.loadData(forced)
+    }
+    
+    func loadData() {
+        self.loadData(false)
+    }
+    
+    func updateUI() {
+        /*Override me*/
+    }
+}
