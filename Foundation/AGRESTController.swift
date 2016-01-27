@@ -1,5 +1,5 @@
 //
-//  RESTController.swift
+//  AGRESTController.swift
 //
 //  Created by Andrei Gubceac on 1/20/16.
 //  Copyright © 2016 Andrei Gubceac. All rights reserved.
@@ -9,7 +9,7 @@ import Alamofire
 
 typealias RESTResultBlock = (result : AnyObject?) -> Void
 
-class RESTController : Manager {
+class AGRESTController : Manager {
     private var backgroundQueue : dispatch_queue_t?
     private let version         = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as! String
 

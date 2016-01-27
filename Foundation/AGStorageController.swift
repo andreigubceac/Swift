@@ -1,5 +1,5 @@
 //
-//  StorageController.swift
+//  AGStorageController.swift
 //
 //  Created by Andrei Gubceac on 1/20/16.
 //  Copyright © 2016 Andrei Gubceac. All rights reserved.
@@ -10,7 +10,7 @@ import Foundation
 typealias StoreResultBlock = (result : AnyObject?, fromLocal : Bool) -> Void
 typealias StoreProgressBlock = (message : String) -> Void
 
-class StorageController {
+class AGStorageController {
     private let bundleIdentifier    = NSBundle.mainBundle().infoDictionary?["CFBundleIdentifier"] as! String
 
     private let operationQueue = NSOperationQueue()
@@ -34,8 +34,8 @@ class StorageController {
     
     /*API*/
     func processAPIResponse(result : AnyObject?, completion : StoreResultBlock) {
-        if let dictionary = result as? NSDictionary {
-            completion(result: dictionary, fromLocal: false)
+        if result is NSDictionary || result is NSArray {
+            completion(result: result, fromLocal: false)
         }
         else {
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
