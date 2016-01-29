@@ -41,7 +41,7 @@ extension UIViewController {
     
     
     func loadData(forced : Bool) {
-        self.loadData(forced)
+        /*Override me*/
     }
     
     func loadData() {

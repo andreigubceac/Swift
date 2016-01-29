@@ -81,7 +81,7 @@ class AGRESTController : Manager {
             headers = [:]
             headers!["token"]        = self.token
         }
-        _logString.appendContentsOf("[\(dateFormatter.stringFromDate(NSDate()))] Start <\(method)> \(URLString)\n {\(parameters)}\n")
+        self.appendConcsoleLog("[\(dateFormatter.stringFromDate(NSDate()))] Start <\(method)> \(URLString)\n {\(parameters)}\n")
         return super.request(method, URLString, parameters: parameters, encoding: encoding, headers: headers).response(queue: self.backgroundQueue, completionHandler: {[weak self] (NSURLRequest, NSHTTPURLResponse, NSData, error) -> Void in
             if NSHTTPURLResponse?.statusCode == 401 {
                 /*Session expired*/
@@ -117,7 +117,6 @@ class AGRESTController : Manager {
                         
                         resultBlock(result: JSON)
                     } catch let error as NSError {
-                        debugPrint(NSString(data: validData, encoding: 4))
                         self!.appendConcsoleLog("\(error.localizedDescription)\n==================\n")
                         resultBlock(result: error)
                         }
