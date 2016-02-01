@@ -10,7 +10,7 @@ import Alamofire
 typealias RESTResultBlock = (result : AnyObject?) -> Void
 
 class AGRESTController : Manager {
-    private var backgroundQueue : dispatch_queue_t?
+    private var backgroundQueue = dispatch_queue_create("BackgroundQueue", DISPATCH_QUEUE_CONCURRENT)
     private let version         = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as! String
 
     /*Auth*/
@@ -35,19 +35,18 @@ class AGRESTController : Manager {
         }
     }
 
-    init(queue : dispatch_queue_t?) {
+    init() {
         let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
         configuration.HTTPAdditionalHeaders = Manager.defaultHTTPHeaders
         super.init(configuration: configuration)
         
-        self.backgroundQueue = queue ?? dispatch_queue_create("BackgroundQueue", DISPATCH_QUEUE_CONCURRENT)
         self.dateFormatter.dateFormat   = "yyyy-MM-dd HH:mm"
         self.dateFormatter.timeZone     = NSTimeZone(name: "UTC")
         
     }
     
     convenience init(baseUrl : String) {
-        self.init(queue : nil)
+        self.init()
         self.baseUrl = baseUrl
     }
     
@@ -70,17 +69,13 @@ class AGRESTController : Manager {
         )
     }()
 
-    private func URLStringForMethod(methodString : String) -> String {
+    func URLStringForMethod(methodString : String) -> String {
         let urlString   = self.baseUrl!.stringByAppendingString(methodString)
         return urlString
     }
     
     func requestJSON(method: Alamofire.Method, _ URLString: URLStringConvertible, parameters: [ String : AnyObject ]? = nil, encoding: ParameterEncoding = .URL, resultBlock : RESTResultBlock ) -> Request {
-        var headers : [String : String]? = nil
-        if self.token != nil {
-            headers = [:]
-            headers!["token"]        = self.token
-        }
+        let headers = self.authorizeRequest()
         self.appendConcsoleLog("[\(dateFormatter.stringFromDate(NSDate()))] Start <\(method)> \(URLString)\n {\(parameters)}\n")
         return super.request(method, URLString, parameters: parameters, encoding: encoding, headers: headers).response(queue: self.backgroundQueue, completionHandler: {[weak self] (NSURLRequest, NSHTTPURLResponse, NSData, error) -> Void in
             if NSHTTPURLResponse?.statusCode == 401 {
@@ -123,5 +118,12 @@ class AGRESTController : Manager {
                     }
                 }
             })
+    }
+    
+    /*Sign The Request*/
+    
+    func authorizeRequest() -> [String : String]? {
+        /*Override this method*/
+        return nil
     }
 }
