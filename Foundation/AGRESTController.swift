@@ -11,7 +11,6 @@ typealias RESTResultBlock = (result : AnyObject?) -> Void
 
 class AGRESTController : Manager {
     private var backgroundQueue = dispatch_queue_create("BackgroundQueue", DISPATCH_QUEUE_CONCURRENT)
-    private let version         = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as! String
 
     /*Auth*/
     private var username, password: String?
