@@ -111,7 +111,7 @@ class AGRESTController : Manager {
                         
                         resultBlock(result: JSON)
                     } catch let error as NSError {
-                        self!.appendConcsoleLog("\(error.localizedDescription)\n==================\n")
+                        self!.appendConcsoleLog("Error = \(error.localizedDescription)\nText\(NSString(data: validData, encoding: 4)))\n==================\n")
                         resultBlock(result: error)
                         }
                     }
