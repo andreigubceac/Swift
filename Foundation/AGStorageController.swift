@@ -38,6 +38,10 @@ class AGStorageController {
         }
     }
     
+    func runMainThreadTask(block : () -> Void) {
+        NSOperationQueue.mainQueue().addOperationWithBlock(block);
+    }
+    
     /*Storage*/
     
     /*Write*/
