@@ -24,7 +24,7 @@ extension UIViewController {
     }
     
     /*Custom*/
-    func presentAlertInfo(title : String?, message : String?, animated : Bool? = true, completion : (Void->Void)?) {
+    func presentAlertInfo(title : String?, message : String?, animated : Bool? = true, completion : (Void->Void)? = nil) {
         let alert = self.presentAlertWith(title, message: message, animated: animated, completion: completion)
         alert.addAction(UIAlertAction(title: NSLocalizedString("Ok", comment: "Ok"), style: UIAlertActionStyle.Cancel, handler: nil))
     }
