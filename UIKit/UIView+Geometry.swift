@@ -10,6 +10,7 @@
 import UIKit
 
 extension UIView {
+    @IBInspectable
     var cornerRadius : CGFloat {
         get {
             return layer.cornerRadius;
@@ -19,6 +20,7 @@ extension UIView {
             layer.masksToBounds = newValue > 0
         }
     }
+    @IBInspectable
     var borderColor : UIColor {
         get {
             return UIColor(CGColor: layer.borderColor!);
@@ -27,15 +29,25 @@ extension UIView {
             layer.borderColor = newValue.CGColor;
         }
     }
+    @IBInspectable
     var borderWidth : CGFloat {
         get {
             return layer.borderWidth;
         }
         set {
             layer.borderWidth = newValue;
+            layer.masksToBounds = true
         }
     }
-    
+    @IBInspectable
+    var fullRounded : Bool {
+        get {
+            return self.cornerRadius == self.width / 2
+        }
+        set {
+            self.cornerRadius = self.width / 2
+        }
+    }
 }
 
 /*Geometry*/
