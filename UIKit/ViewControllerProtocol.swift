@@ -8,11 +8,11 @@
 
 import UIKit
 
-typealias ViewControllerProtocolBlock = (viewController : UIViewController, info : AnyObject?) -> Void
+typealias ViewControllerProtocolBlock = (viewController : UIViewController, info : Any?) -> Void
 
-protocol ViewControllerProtocol
+protocol ViewControllerProtocol : class
 {
-    var info : AnyObject? { get set}
+    var info : Any? { get set}
     var delegateBlock : ViewControllerProtocolBlock? { get set}
     
 /*
