@@ -82,6 +82,14 @@ class AGRESTController : Manager {
                 self?.token = nil
                 self!.appendConcsoleLog("End Session Invalid 401\n==================\n")
                 /*Call userSignIn method*/
+                self?.autosignInRequest({ (result) in
+                    if result is NSError {
+                        resultBlock(result: result)
+                    }
+                    else {
+                        self?.requestJSON(method, URLString, parameters: parameters, encoding: encoding, resultBlock: resultBlock)
+                    }
+                })
             }
             else {
                 if NSHTTPURLResponse != nil {
@@ -120,6 +128,10 @@ class AGRESTController : Manager {
     }
     
     /*Sign The Request*/
+    
+    func autosignInRequest(completion : RESTResultBlock) -> Void {
+        /*override*/
+    }
     
     func authorizeRequest() -> [String : String]? {
         /*Override this method*/
