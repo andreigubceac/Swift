@@ -79,7 +79,6 @@ class AGRESTController : Manager {
         return super.request(method, URLString, parameters: parameters, encoding: encoding, headers: headers).response(queue: self.backgroundQueue, completionHandler: {[weak self] (NSURLRequest, NSHTTPURLResponse, NSData, error) -> Void in
             if NSHTTPURLResponse?.statusCode == 401 {
                 /*Session expired*/
-                self?.token = nil
                 self!.appendConcsoleLog("End Session Invalid 401\n==================\n")
                 /*Call userSignIn method*/
                 self?.autosignInRequest({ (result) in
@@ -131,6 +130,7 @@ class AGRESTController : Manager {
     
     func autosignInRequest(completion : RESTResultBlock) -> Void {
         /*override*/
+        self.token = nil
     }
     
     func authorizeRequest() -> [String : String]? {
