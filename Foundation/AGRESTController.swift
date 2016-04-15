@@ -81,7 +81,7 @@ class AGRESTController : Manager {
                 /*Session expired*/
                 self!.appendConcsoleLog("End Session Invalid 401\n==================\n")
                 /*Call userSignIn method*/
-                self?.autosignInRequest({ (result) in
+                self?.autosignInRequest(NSURLRequest!, completion: { (result) in
                     if result is NSError {
                         resultBlock(result: result)
                     }
@@ -115,7 +115,6 @@ class AGRESTController : Manager {
                     do {
                         let JSON = try NSJSONSerialization.JSONObjectWithData(validData, options: .AllowFragments)
                         self!.appendConcsoleLog("\(JSON)\n==================\n")
-                        
                         resultBlock(result: JSON)
                     } catch let error as NSError {
                         self!.appendConcsoleLog("Error = \(error.localizedDescription)\nText\(NSString(data: validData, encoding: 4)))\n==================\n")
@@ -128,7 +127,7 @@ class AGRESTController : Manager {
     
     /*Sign The Request*/
     
-    func autosignInRequest(completion : RESTResultBlock) -> Void {
+    func autosignInRequest(request : NSURLRequest, completion : RESTResultBlock) -> Void {
         /*override*/
         self.token = nil
     }
