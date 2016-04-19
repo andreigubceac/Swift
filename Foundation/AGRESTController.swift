@@ -136,4 +136,13 @@ class AGRESTController : Manager {
         /*Override this method*/
         return nil
     }
+    
+    /*APNs*/
+    func logRemoteNotification(userInfo : [NSObject : AnyObject]) -> Void {
+        self.appendConcsoleLog("\nAPNs - Start ===============\n")
+        if let dictionary = userInfo["aps"] as? NSDictionary {
+            self.appendConcsoleLog(dictionary.description)
+        }
+        self.appendConcsoleLog("\nAPNs - End  ================\n")
+    }
 }
