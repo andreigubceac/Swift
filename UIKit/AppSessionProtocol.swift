@@ -4,6 +4,8 @@
 //  Copyright © 2016 Andrei Gubceac. All rights reserved.
 //
 
+import Foundation
+
 protocol AppSessionProtocol {
 
     func openAppSession()

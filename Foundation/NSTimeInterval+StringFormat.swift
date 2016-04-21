@@ -5,6 +5,8 @@
 //  Copyright © 2016 Andrei Gubceac. All rights reserved.
 //
 
+import Foundation
+
 extension NSTimeInterval {
     
     func formatHrMin() -> String {
