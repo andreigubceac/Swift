@@ -34,39 +34,18 @@ class AGRESTController : Manager {
         }
     }
 
-    init() {
+    init(serverTrustPolicyManager : ServerTrustPolicyManager? = nil) {
         let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
         configuration.HTTPAdditionalHeaders = Manager.defaultHTTPHeaders
-        super.init(configuration: configuration)
-        
+        super.init(configuration: configuration, delegate: SessionDelegate(), serverTrustPolicyManager: serverTrustPolicyManager)
         self.dateFormatter.dateFormat   = "yyyy-MM-dd HH:mm"
         self.dateFormatter.timeZone     = NSTimeZone(name: "UTC")
-        
     }
     
     convenience init(baseUrl : String) {
         self.init()
         self.baseUrl = baseUrl
     }
-    
-    let defaultManager: Alamofire.Manager = {
-        let serverTrustPolicies: [String: ServerTrustPolicy] = [
-            "test.example.com": .PinCertificates(
-                certificates: ServerTrustPolicy.certificatesInBundle(),
-                validateCertificateChain: false,
-                validateHost: true
-            ),
-            "insecure.expired-apis.com": .DisableEvaluation
-        ]
-        
-        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-        configuration.HTTPAdditionalHeaders = Alamofire.Manager.defaultHTTPHeaders
-        
-        return Alamofire.Manager(
-            configuration: configuration,
-            serverTrustPolicyManager: ServerTrustPolicyManager(policies: serverTrustPolicies)
-        )
-    }()
 
     func URLStringForMethod(methodString : String) -> String {
         let urlString   = self.baseUrl!.stringByAppendingString(methodString)
