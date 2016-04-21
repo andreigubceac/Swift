@@ -1,9 +1,8 @@
 //
 //  UIColor.swift
-//  Whimzer
 //
 //  Created by Andrei Gubceac on 4/21/16.
-//  Copyright © 2016 Whimzer Inc. All rights reserved.
+//  Copyright © 2016. All rights reserved.
 //
 
 import UIKit
