@@ -20,8 +20,8 @@ class ConsoleViewController: ViewController {
 
         // Do any additional setup after loading the view.
         self.title = "Console"
-        self.textView.text = AppDelegate.shared.storage?.rest?.logString()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Clear", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(ConsoleViewController.clearAction(_:)))
+        self.textView.text = self.storage?.rest?.logString()
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Clear", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(ConsoleViewController.clearAction(_:)))
     }
     
     override func viewWillAppear(animated: Bool) {

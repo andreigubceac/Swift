@@ -84,7 +84,7 @@ class AGRESTController : Manager {
                     
                     guard let validData = NSData where validData.length > 0 else {
                         let failureReason = "JSON could not be serialized. Input data was nil or zero length."
-                        let error = Error.errorWithCode(.JSONSerializationFailed, failureReason: failureReason)
+                        let error = NSError(domain: "API", code: 500, userInfo: [NSLocalizedDescriptionKey : failureReason])
                         self!.appendConcsoleLog("\(error.localizedDescription)\n==================\n")
                         
                         resultBlock(result: error)
