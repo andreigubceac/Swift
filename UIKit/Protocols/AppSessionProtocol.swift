@@ -4,7 +4,7 @@
 //  Copyright © 2016 Andrei Gubceac. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 protocol AppSessionProtocol {
 
