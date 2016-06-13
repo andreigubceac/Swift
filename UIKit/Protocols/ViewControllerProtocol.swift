@@ -15,11 +15,6 @@ protocol ViewControllerProtocol : class
     var info : Any? { get set}
     var delegateBlock : ViewControllerProtocolBlock? { get set}
     
-/*
-    init(info : AnyObject)
-    init(delegateBlock : ViewControllerProtocolBlock)
-    init(info : AnyObject, delegateBlock : ViewControllerProtocolBlock)
-*/    
 }
 
 
