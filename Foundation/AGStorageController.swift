@@ -7,7 +7,7 @@
 
 import Foundation
 
-typealias StoreResultBlock = (result : AnyObject?, fromLocal : Bool) -> Void
+typealias StoreResultBlock = (result : Any?, fromLocal : Bool) -> Void
 typealias StoreProgressBlock = (message : String) -> Void
 
 class AGStorageController {
