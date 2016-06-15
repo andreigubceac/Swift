@@ -23,7 +23,7 @@ extension UIViewController {
     
     func presentAlertWith(title : String?, message : String?, animated : Bool? = true, completion : (Void->Void)? = nil) -> UIAlertController {
         let alert = UIAlertController.alertController(title, message: message)
-        self .presentViewController(alert, animated: animated!, completion: completion);
+        presentViewController(alert, animated: animated!, completion: completion);
         return alert
     }
     
@@ -36,7 +36,7 @@ extension UIViewController {
     
     func presentActionSheetWith(title : String?, message : String?, animated : Bool? = true, completion : (Void->Void)? = nil) -> UIAlertController {
         let alert = UIAlertController.actionSheetController(title, message: message)
-        self .presentViewController(alert, animated: animated!, completion: completion);
+        presentViewController(alert, animated: animated!, completion: completion);
         return alert
     }
     

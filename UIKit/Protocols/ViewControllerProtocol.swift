@@ -21,9 +21,11 @@ protocol ViewControllerProtocol : class
 extension UIViewController {
     
     var storage : StorageController? {
-        get {
-            return AppDelegate.shared.storage
-        }
+        return application.storage
+    }
+    
+    var application : AppDelegate {
+        return AppDelegate.shared
     }
     
     class func dismissViewControllerSelector() -> Selector {
