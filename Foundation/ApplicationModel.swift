@@ -17,7 +17,7 @@ import Foundation
 
 class ApplicationModel : ApplicationModelProtocol {
     private var _dictionary : Dictionary<String, AnyObject>!
-
+    
     class func identifierKey() -> String {
         return "Id"
     }
@@ -28,6 +28,10 @@ class ApplicationModel : ApplicationModelProtocol {
 
     init(dictionary : Dictionary<String, AnyObject>) {
         _dictionary = dictionary
+    }
+    
+    convenience init() {
+        self.init(dictionary: [self.dynamicType.identifierKey(): NSUUID.init().UUIDString])
     }
     
     func update(dictionary : Dictionary<String, AnyObject>) {

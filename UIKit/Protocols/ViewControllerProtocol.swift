@@ -42,7 +42,7 @@ extension UIViewController {
     }
     
     func loadData() {
-        self.loadData(false)
+        loadData(false)
     }
     
     func updateUI() {
