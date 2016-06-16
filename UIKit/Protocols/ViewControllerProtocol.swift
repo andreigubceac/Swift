@@ -49,3 +49,18 @@ extension UIViewController {
         /*Override me*/
     }
 }
+
+extension UINavigationController {
+    
+    override func loadData() {
+        topViewController?.loadData()
+    }
+    
+    override func loadData(forced: Bool) {
+        topViewController?.loadData(forced)
+    }
+    
+    override func updateUI() {
+        topViewController?.updateUI()
+    }
+}
