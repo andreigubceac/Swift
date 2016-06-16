@@ -35,7 +35,9 @@ class ApplicationModel : ApplicationModelProtocol {
     }
     
     func update(dictionary : Dictionary<String, AnyObject>) {
-        _dictionary = dictionary
+        for (key, value) in dictionary {
+            _dictionary.updateValue(value, forKey: key)
+        }
     }
     
     func setValue(value : AnyObject?, for key : String) {
@@ -48,14 +50,14 @@ class ApplicationModel : ApplicationModelProtocol {
     
     /*ApplicationModelProtocol*/
     @objc var identifier: String {
-        if let id = _dictionary[self.dynamicType.self.identifierKey()] as? NSNumber {
+        if let id = self[self.dynamicType.self.identifierKey()] as? NSNumber {
             return id.stringValue
         }
-        return _dictionary[self.dynamicType.self.identifierKey()] as! String
+        return self[self.dynamicType.self.identifierKey()] as! String
     }
     
     @objc var name: String? {
-        return _dictionary[self.dynamicType.self.nameKey()] as? String
+        return self[self.dynamicType.self.nameKey()] as? String
     }
 
     subscript(key : String) -> AnyObject? {
