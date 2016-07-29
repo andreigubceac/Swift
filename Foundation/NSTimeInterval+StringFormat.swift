@@ -15,7 +15,7 @@ extension NSTimeInterval {
         if hh > 0 {
             mm %= 60
         }
-        return ("" + (hh > 0 ?"\(hh) hr" + (hh == 1 ? "" : "s") : "") + (mm > 0 ? " \(mm) min" : "00 min")).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+        return ("" + (hh > 0 ?"\(hh) hr" + (hh == 1 ? "" : "s") : "") + (mm > 0 ? " \(mm) min" : (hh > 0 ? "" : "00 min"))).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
     }
 
     func formatHrMinSec() -> String {
