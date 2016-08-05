@@ -23,10 +23,10 @@ extension UIView {
     @IBInspectable
     var borderColor : UIColor {
         get {
-            return UIColor(CGColor: layer.borderColor!);
+            return UIColor(cgColor: layer.borderColor!);
         }
         set {
-            layer.borderColor = newValue.CGColor;
+            layer.borderColor = newValue.cgColor;
         }
     }
     @IBInspectable
@@ -71,7 +71,7 @@ extension UIView {
             self.frame = frame
         }
         get {
-            return CGRectGetMaxX(self.frame)
+            return self.frame.maxX
         }
     }
     
@@ -93,7 +93,7 @@ extension UIView {
             self.frame = frame
         }
         get {
-            return CGRectGetMaxY(self.frame)
+            return self.frame.maxY
         }
     }
     

@@ -8,11 +8,11 @@
 import UIKit
 
 extension UIImage {
-    class func image(color : UIColor? = UIColor.clearColor(), size : CGSize? = CGSizeMake(1, 1)) -> UIImage {
+    class func image(_ color : UIColor? = UIColor.clear, size : CGSize? = CGSize(width: 1, height: 1)) -> UIImage {
         UIGraphicsBeginImageContext(size!)
-        CGContextSetFillColorWithColor(UIGraphicsGetCurrentContext(), color?.CGColor)
+        UIGraphicsGetCurrentContext()?.setFillColor((color?.cgColor)!)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return image
+        return image!
     }
 }

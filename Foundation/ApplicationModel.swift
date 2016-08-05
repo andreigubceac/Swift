@@ -12,7 +12,7 @@ import Foundation
     var name : String? { get }
     func toDictionary() -> Dictionary<String,AnyObject>
     
-    optional var date : NSDate? { get set }
+    @objc optional var date : Date? { get set }
 }
 
 class ApplicationModel : ApplicationModelProtocol {
@@ -31,16 +31,16 @@ class ApplicationModel : ApplicationModelProtocol {
     }
     
     convenience init() {
-        self.init(dictionary: [self.dynamicType.identifierKey(): NSUUID.init().UUIDString])
+        self.init(dictionary: [self.dynamicType.identifierKey(): UUID.init().uuidString])
     }
     
-    func update(dictionary : Dictionary<String, AnyObject>) {
+    func update(_ dictionary : Dictionary<String, AnyObject>) {
         for (key, value) in dictionary {
             _dictionary.updateValue(value, forKey: key)
         }
     }
     
-    func setValue(value : AnyObject?, for key : String) {
+    func setValue(_ value : AnyObject?, for key : String) {
         _dictionary[key] = value
     }
     

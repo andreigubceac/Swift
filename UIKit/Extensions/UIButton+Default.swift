@@ -10,30 +10,30 @@ import UIKit
 /*Custom UI*/
 extension UIButton {
     
-    class func buttonWith(target : AnyObject?, action : Selector?, image : String) -> UIButton {
-        let b = UIButton(type: .Custom);
+    class func buttonWith(_ target : AnyObject?, action : Selector?, image : String) -> UIButton {
+        let b = UIButton(type: .custom);
         if action != nil {
-            b.addTarget(target, action: action!, forControlEvents: .TouchUpInside)
+            b.addTarget(target, action: action!, for: .touchUpInside)
         }
-        b.setBackgroundImage(UIImage(named: image), forState: .Normal)
-        b.frame.size = b.backgroundImageForState(.Normal)!.size
+        b.setBackgroundImage(UIImage(named: image), for: UIControlState())
+        b.frame.size = b.backgroundImage(for: UIControlState())!.size
         return b
     }
 
-    class func buttonWith(target : AnyObject?, action : Selector?, title : String) -> UIButton {
-        let b = UIButton(type: .Custom);
+    class func buttonWith(_ target : AnyObject?, action : Selector?, title : String) -> UIButton {
+        let b = UIButton(type: .custom);
         if action != nil {
-            b.addTarget(target, action: action!, forControlEvents: .TouchUpInside)
+            b.addTarget(target, action: action!, for: .touchUpInside)
         }
-        b.setTitle(title, forState: .Normal)
+        b.setTitle(title, for: UIControlState())
         b.sizeToFit()
         return b
     }
 
-    class func navigationItem(target : AnyObject?, action : Selector?, image : String) -> UIButton {
+    class func navigationItem(_ target : AnyObject?, action : Selector?, image : String) -> UIButton {
         let b = self.buttonWith(target, action: action, image: image)
-        if let image = b.backgroundImageForState(.Normal) {
-            b.setBackgroundImage(image.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        if let image = b.backgroundImage(for: UIControlState()) {
+            b.setBackgroundImage(image.withRenderingMode(.alwaysTemplate), for: UIControlState())
         }
         return b
     }

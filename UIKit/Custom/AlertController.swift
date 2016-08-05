@@ -9,34 +9,34 @@ import UIKit
 
 extension UIAlertController {
     
-    class func alertController(title : String?, message : String?) -> UIAlertController {
-        return UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
+    class func alertController(_ title : String?, message : String?) -> UIAlertController {
+        return UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
     }
 
-    class func actionSheetController(title : String?, message : String?) -> UIAlertController {
-        return UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.ActionSheet)
+    class func actionSheetController(_ title : String?, message : String?) -> UIAlertController {
+        return UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.actionSheet)
     }
 
 }
 
 extension UIViewController {
     
-    func presentAlertWith(title : String?, message : String?, animated : Bool? = true, completion : (Void->Void)? = nil) -> UIAlertController {
+    func presentAlertWith(_ title : String?, message : String?, animated : Bool? = true, completion : ((Void)->Void)? = nil) -> UIAlertController {
         let alert = UIAlertController.alertController(title, message: message)
-        presentViewController(alert, animated: animated!, completion: completion);
+        present(alert, animated: animated!, completion: completion);
         return alert
     }
     
     /*Custom*/
-    func presentAlertInfo(title : String?, message : String?, animated : Bool? = true, completion : (Void->Void)? = nil) -> UIAlertController{
+    func presentAlertInfo(_ title : String?, message : String?, animated : Bool? = true, completion : ((Void)->Void)? = nil) -> UIAlertController{
         let alert = self.presentAlertWith(title, message: message, animated: animated, completion: completion)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Ok", comment: "Ok"), style: UIAlertActionStyle.Cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Ok", comment: "Ok"), style: UIAlertActionStyle.cancel, handler: nil))
         return alert
     }
     
-    func presentActionSheetWith(title : String?, message : String?, animated : Bool? = true, completion : (Void->Void)? = nil) -> UIAlertController {
+    func presentActionSheetWith(_ title : String?, message : String?, animated : Bool? = true, completion : ((Void)->Void)? = nil) -> UIAlertController {
         let alert = UIAlertController.actionSheetController(title, message: message)
-        presentViewController(alert, animated: animated!, completion: completion);
+        present(alert, animated: animated!, completion: completion);
         return alert
     }
     

@@ -11,7 +11,7 @@ import UIKit
 
     var topViewController : UIViewController { get }
     
-    optional func showWelcomeViewController(animated : Bool)
-    optional func showHomeViewController(animated : Bool)
+    @objc optional func showWelcomeViewController(_ animated : Bool)
+    @objc optional func showHomeViewController(_ animated : Bool)
     
 }

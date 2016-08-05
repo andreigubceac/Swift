@@ -14,15 +14,15 @@ class WebViewController: UIViewController {
         }
     }
     
-    var url : NSURL? {
+    var url : URL? {
         didSet {
             if url != nil {
-                self.webView.loadRequest(NSURLRequest(URL: url!))
+                self.webView.loadRequest(URLRequest(url: url!))
             }
         }
     }
     
-    init(url : NSURL) {
+    init(url : URL) {
         super.init(nibName: nil, bundle: nil)
         defer {
             self.url = url
@@ -34,11 +34,11 @@ class WebViewController: UIViewController {
     }
     
     override func loadView() {
-        let webView = UIWebView(frame: UIScreen.mainScreen().bounds)
+        let webView = UIWebView(frame: UIScreen.main.bounds)
         webView.scrollView.showsVerticalScrollIndicator = false
         webView.scrollView.showsHorizontalScrollIndicator = false
-        webView.backgroundColor = UIColor.clearColor()
-        webView.opaque = true
+        webView.backgroundColor = UIColor.clear
+        webView.isOpaque = true
         self.view = webView
     }
 
@@ -46,6 +46,6 @@ class WebViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
     }
 }

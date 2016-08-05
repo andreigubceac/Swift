@@ -12,14 +12,14 @@ protocol AppSessionProtocol {
     
     func closeAppSession()
     
-    func handleError(error : NSError)
+    func handleError(_ error : NSError)
 }
 
 extension UIApplicationDelegate {
     
     static var shared : AppDelegate {
         get {
-            return UIApplication.sharedApplication().delegate as! AppDelegate
+            return UIApplication.shared.delegate as! AppDelegate
         }
     }
     
