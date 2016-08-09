@@ -11,7 +11,7 @@ typealias StoreResultBlock = (result : Any?, fromLocal : Bool) -> Void
 typealias StoreProgressBlock = (message : String) -> Void
 
 class AGStorageController {
-    let bundleIdentifier = Bundle.main.infoDictionary?["CFBundleIdentifier"] as! String
+    let bundleIdentifier = (Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String) ?? ""
 
     private let operationQueue = OperationQueue()
 

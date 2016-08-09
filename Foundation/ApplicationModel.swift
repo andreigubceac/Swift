@@ -8,7 +8,7 @@
 import Foundation
 
 @objc protocol ApplicationModelProtocol {
-    var identifier : String { get }
+    var identifier : String? { get }
     var name : String? { get }
     func toDictionary() -> Dictionary<String,AnyObject>
     
@@ -49,11 +49,11 @@ class ApplicationModel : ApplicationModelProtocol {
     }
     
     /*ApplicationModelProtocol*/
-    @objc var identifier: String {
+    @objc var identifier: String? {
         if let id = self[self.dynamicType.self.identifierKey()] as? NSNumber {
             return id.stringValue
         }
-        return self[self.dynamicType.self.identifierKey()] as! String
+        return self[self.dynamicType.self.identifierKey()] as? String
     }
     
     @objc var name: String? {
