@@ -40,10 +40,6 @@ class ApplicationModel : ApplicationModelProtocol {
         }
     }
     
-    func setValue(_ value : AnyObject?, for key : String) {
-        _dictionary[key] = value
-    }
-    
     @objc func toDictionary() -> Dictionary<String,AnyObject> {
         return _dictionary!
     }
