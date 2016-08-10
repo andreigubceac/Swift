@@ -18,15 +18,19 @@ import Foundation
 class ApplicationModel : ApplicationModelProtocol {
     internal var _dictionary : Dictionary<String, Any>!
     
-    class func identifierKey() -> String {
+    static func identifierKey() -> String {
         return "Id"
     }
     
-    class func nameKey() -> String {
+    static func emptyObject(with identifier : String) -> Self {
+        return self.init(dictionary: [self.identifierKey() : identifier])
+    }
+    
+    static func nameKey() -> String {
         return "Name"
     }
 
-    init(dictionary : Dictionary<String, Any>) {
+    required init(dictionary : Dictionary<String, Any>) {
         _dictionary = dictionary
     }
     
