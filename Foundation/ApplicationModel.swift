@@ -10,13 +10,13 @@ import Foundation
 @objc protocol ApplicationModelProtocol {
     var identifier : String? { get }
     var name : String? { get }
-    func toDictionary() -> Dictionary<String,AnyObject>
+    func toDictionary() -> Dictionary<String,Any>
     
     @objc optional var date : Date? { get set }
 }
 
 class ApplicationModel : ApplicationModelProtocol {
-    private var _dictionary : Dictionary<String, AnyObject>!
+    internal var _dictionary : Dictionary<String, Any>!
     
     class func identifierKey() -> String {
         return "Id"
@@ -26,37 +26,37 @@ class ApplicationModel : ApplicationModelProtocol {
         return "Name"
     }
 
-    init(dictionary : Dictionary<String, AnyObject>) {
+    init(dictionary : Dictionary<String, Any>) {
         _dictionary = dictionary
     }
     
     convenience init() {
-        self.init(dictionary: [self.dynamicType.identifierKey(): UUID.init().uuidString])
+        self.init(dictionary: [type(of: self).identifierKey(): UUID.init().uuidString])
     }
     
-    func update(_ dictionary : Dictionary<String, AnyObject>) {
+    func update(_ dictionary : Dictionary<String, Any>) {
         for (key, value) in dictionary {
             _dictionary.updateValue(value, forKey: key)
         }
     }
     
-    @objc func toDictionary() -> Dictionary<String,AnyObject> {
+    @objc func toDictionary() -> Dictionary<String,Any> {
         return _dictionary!
     }
     
     /*ApplicationModelProtocol*/
     @objc var identifier: String? {
-        if let id = self[self.dynamicType.self.identifierKey()] as? NSNumber {
+        if let id = self[type(of: self).identifierKey()] as? NSNumber {
             return id.stringValue
         }
-        return self[self.dynamicType.self.identifierKey()] as? String
+        return self[type(of: self).identifierKey()] as? String
     }
     
     @objc var name: String? {
-        return self[self.dynamicType.self.nameKey()] as? String
+        return self[type(of: self).nameKey()] as? String
     }
 
-    subscript(key : String) -> AnyObject? {
+    subscript(key : String) -> Any? {
         get {
             return _dictionary[key]
         }
