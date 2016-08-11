@@ -13,11 +13,13 @@ import UIKit
     optional func showHomeViewController(animated : Bool)
     
     var rootViewController : UIViewController { get }
+    
+    optional func customRootViewController(from : UIViewController) -> UIViewController?
 }
 
 extension AppNavigationProtocol {
     
-    private func topViewController(fromViewController : UIViewController) -> UIViewController {
+    func topViewController(fromViewController : UIViewController) -> UIViewController {
         /*Default UIKit*/
         if let vc = fromViewController.presentedViewController {
             return topViewController(vc)
@@ -26,7 +28,10 @@ extension AppNavigationProtocol {
             return topViewController(vc.topViewController!)
         }
         else if let vc = fromViewController as? UITabBarController {
-            return self.topViewController(vc.selectedViewController!)
+            return topViewController(vc.selectedViewController!)
+        }
+        else if let vc = customRootViewController?(fromViewController) {
+            return topViewController(vc)
         }
         return fromViewController
     }
