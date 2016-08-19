@@ -14,8 +14,6 @@ import UIKit
     @objc optional func showWelcomeViewController(_ animated : Bool)
     @objc optional func showHomeViewController(_ animated : Bool)
     
-    var topViewController : UIViewController { get }
-    
 }
 
 extension AppNavigationProtocol {
@@ -23,13 +21,13 @@ extension AppNavigationProtocol {
     func topViewController(fromViewController : UIViewController) -> UIViewController {
         /*Default UIKit*/
         if let vc = fromViewController.presentedViewController {
-            return topViewController(vc)
+            return self.topViewController(fromViewController: vc)
         }
         else if let vc = fromViewController as? UINavigationController {
-            return topViewController(vc.topViewController!)
+            return self.topViewController(fromViewController: vc.topViewController!)
         }
         else if let vc = fromViewController as? UITabBarController {
-            return topViewController(vc.selectedViewController!)
+            return self.topViewController(fromViewController: vc.selectedViewController!)
         }
         return fromViewController
     }

@@ -7,9 +7,9 @@
 
 import Alamofire
 
-typealias RESTResultBlock = (result : AnyObject?) -> Void
+typealias RESTResultBlock = (_ result : Any?) -> Void
 
-class AGRESTController : Manager {
+class AGRESTController : SessionManager {
     private var backgroundQueue = DispatchQueue(label: "BackgroundQueue", qos : DispatchQoS(qosClass: DispatchQoS.QoSClass.background, relativePriority: 0))
 
     /*Auth*/
@@ -36,7 +36,7 @@ class AGRESTController : Manager {
 
     init(serverTrustPolicyManager : ServerTrustPolicyManager? = nil) {
         let configuration = URLSessionConfiguration.default
-        configuration.httpAdditionalHeaders = Manager.defaultHTTPHeaders
+        configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
         super.init(configuration: configuration, delegate: SessionDelegate(), serverTrustPolicyManager: serverTrustPolicyManager)
         self.dateFormatter.dateFormat   = "yyyy-MM-dd HH:mm"
         self.dateFormatter.timeZone     = TimeZone(identifier : "UTC")
@@ -52,17 +52,17 @@ class AGRESTController : Manager {
         return urlString
     }
     
-    func requestJSON(_ method: Alamofire.Method, _ URLString: URLStringConvertible, parameters: [ String : AnyObject ]? = nil, encoding: ParameterEncoding = .url, resultBlock : RESTResultBlock ) -> Request {
+    func requestJSON(_ method: HTTPMethod, _ URLString: URLStringConvertible, parameters: [ String : AnyObject ]? = nil, encoding: ParameterEncoding = .url, resultBlock : RESTResultBlock ) -> Request {
         let headers = self.authorizeRequest()
         self.appendConcsoleLog("[\(dateFormatter.string(from: Date()))] Start <\(method)> \(URLString)\n {\(parameters)}\n")
-        return super.request(method, URLString, parameters: parameters, encoding: encoding, headers: headers).response { (URLRequest, HTTPURLResponse, Data, error) in
+        return super.request(URLString, withMethod: method, parameters: parameters, encoding: encoding, headers: headers).response { (URLRequest, HTTPURLResponse, Data, error) in
             if HTTPURLResponse?.statusCode == 401 {
                 /*Session expired*/
                 self.appendConcsoleLog("End Session Invalid 401\n==================\n")
                 /*Call userSignIn method*/
                 self.autosignInRequest(URLRequest!, completion: { (result) in
                     if result is NSError {
-                        resultBlock(result: result)
+                        resultBlock(result)
                     }
                     else {
                         let _ = self.requestJSON(method, URLString, parameters: parameters, encoding: encoding, resultBlock: resultBlock)
@@ -78,7 +78,7 @@ class AGRESTController : Manager {
                 }
                 if error != nil {
                     self.appendConcsoleLog("\(error!.localizedDescription)\n==================\n")
-                    resultBlock(result: error)
+                    resultBlock(error)
                 }
                 else {
                     
@@ -87,17 +87,17 @@ class AGRESTController : Manager {
                         let error = NSError(domain: "API", code: 500, userInfo: [NSLocalizedDescriptionKey : failureReason])
                         self.appendConcsoleLog("\(error.localizedDescription)\n==================\n")
                         
-                        resultBlock(result: error)
+                        resultBlock(error)
                         return
                     }
                     
                     do {
                         let JSON = try JSONSerialization.jsonObject(with: validData, options: .allowFragments)
                         self.appendConcsoleLog("\(JSON)\n==================\n")
-                        resultBlock(result: JSON)
+                        resultBlock(JSON)
                     } catch let error as NSError {
                         self.appendConcsoleLog("Error = \(error.localizedDescription)\nText\(NSString(data: validData, encoding: 4)))\n==================\n")
-                        resultBlock(result: error)
+                        resultBlock(error)
                     }
                 }
             }
@@ -117,7 +117,7 @@ class AGRESTController : Manager {
     }
     
     /*APNs*/
-    func logRemoteNotification(_ userInfo : [NSObject : AnyObject]) -> Void {
+    func logRemoteNotification(_ userInfo : Dictionary<AnyHashable,Any>) -> Void {
         self.appendConcsoleLog("\nAPNs - Start ===============\n")
         if let dictionary = userInfo["aps"] as? NSDictionary {
             self.appendConcsoleLog(dictionary.description)

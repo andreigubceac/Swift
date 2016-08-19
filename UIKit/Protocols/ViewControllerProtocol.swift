@@ -8,7 +8,7 @@
 
 import UIKit
 
-typealias ViewControllerProtocolBlock = (viewController : UIViewController, info : Any?) -> Void
+typealias ViewControllerProtocolBlock = (_ viewController : UIViewController, _ info : Any?) -> Void
 
 protocol ViewControllerProtocol : class
 {
