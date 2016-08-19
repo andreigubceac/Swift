@@ -73,7 +73,7 @@ class ApplicationModel : ApplicationModelProtocol {
 extension ApplicationModel : CustomStringConvertible {
     
     var description: String {
-        return "\(self) : [\(_dictionary)]"
+        return _dictionary.description
     }
 
 }
