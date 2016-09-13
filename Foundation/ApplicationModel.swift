@@ -12,11 +12,11 @@ import Foundation
     var name : String? { get }
     func toDictionary() -> Dictionary<String,AnyObject>
     
-    optional var date : NSDate? { get set }
+    @objc optional var date : Date? { get set }
 }
 
 class ApplicationModel : ApplicationModelProtocol {
-    private var _dictionary : Dictionary<String, AnyObject>!
+    fileprivate var _dictionary : Dictionary<String, AnyObject>!
     
     class func identifierKey() -> String {
         return "Id"
@@ -31,16 +31,16 @@ class ApplicationModel : ApplicationModelProtocol {
     }
     
     convenience init() {
-        self.init(dictionary: [self.dynamicType.identifierKey(): NSUUID.init().UUIDString])
+        self.init(dictionary: [type(of: self).identifierKey(): UUID.init().uuidString as AnyObject])
     }
     
-    func update(dictionary : Dictionary<String, AnyObject>) {
+    func update(_ dictionary : Dictionary<String, AnyObject>) {
         for (key, value) in dictionary {
             _dictionary.updateValue(value, forKey: key)
         }
     }
     
-    func setValue(value : AnyObject?, for key : String) {
+    func setValue(_ value : AnyObject?, for key : String) {
         _dictionary[key] = value
     }
     
@@ -50,14 +50,14 @@ class ApplicationModel : ApplicationModelProtocol {
     
     /*ApplicationModelProtocol*/
     @objc var identifier: String {
-        if let id = self[self.dynamicType.self.identifierKey()] as? NSNumber {
+        if let id = self[type(of: self).self.identifierKey()] as? NSNumber {
             return id.stringValue
         }
-        return self[self.dynamicType.self.identifierKey()] as! String
+        return self[type(of: self).self.identifierKey()] as! String
     }
     
     @objc var name: String? {
-        return self[self.dynamicType.self.nameKey()] as? String
+        return self[type(of: self).self.nameKey()] as? String
     }
 
     subscript(key : String) -> AnyObject? {

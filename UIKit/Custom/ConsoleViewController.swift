@@ -11,7 +11,7 @@ class ConsoleViewController: ViewController {
     
     override func loadView() {
         let textView = UITextView();
-        textView.editable = false;
+        textView.isEditable = false;
         self.view = textView
     }
     
@@ -21,15 +21,15 @@ class ConsoleViewController: ViewController {
         // Do any additional setup after loading the view.
         self.title = "Console"
         self.textView.text = self.storage?.rest?.logString()
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Clear", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(ConsoleViewController.clearAction(_:)))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Clear", style: UIBarButtonItemStyle.plain, target: self, action: #selector(ConsoleViewController.clearAction(_:)))
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.textView.scrollRangeToVisible(NSMakeRange(self.textView.text.characters.count-1, 0))
     }
@@ -40,16 +40,16 @@ class ConsoleViewController: ViewController {
         }
     }
     
-    func clearAction(sender : AnyObject?) {
+    func clearAction(_ sender : AnyObject?) {
         self.storage?.rest?.logClear()
         self.textView.text = nil
     }
     
-    func syncCalendarWillStart(n : NSNotification?) {
-        self.textView.text.appendContentsOf(NSLocalizedString("Fetching...", comment: "Fetching..."))
+    func syncCalendarWillStart(_ n : Notification?) {
+        self.textView.text.append(NSLocalizedString("Fetching...", comment: "Fetching..."))
     }
     
-    func syncCalendarDidFinish(n : NSNotification?) {
+    func syncCalendarDidFinish(_ n : Notification?) {
         self.textView.text = self.storage?.rest?.logString()
         self.textView.scrollRangeToVisible(NSMakeRange(self.textView.text.characters.count-1, 0))
     }

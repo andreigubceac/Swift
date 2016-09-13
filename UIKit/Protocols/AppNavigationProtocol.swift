@@ -9,8 +9,8 @@ import UIKit
 
 @objc protocol AppNavigationProtocol {
 
-    optional func showWelcomeViewController(animated : Bool)
-    optional func showHomeViewController(animated : Bool)
+    @objc optional func showWelcomeViewController(_ animated : Bool)
+    @objc optional func showHomeViewController(_ animated : Bool)
     
     var topViewController : UIViewController { get }
     
@@ -18,7 +18,7 @@ import UIKit
 
 extension AppNavigationProtocol {
     
-    func topViewController(fromViewController : UIViewController) -> UIViewController {
+    func topViewController(_ fromViewController : UIViewController) -> UIViewController {
         /*Default UIKit*/
         if let vc = fromViewController.presentedViewController {
             return topViewController(vc)

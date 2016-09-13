@@ -7,17 +7,17 @@
 
 import Foundation
 
-typealias StoreResultBlock = (result : Any?, fromLocal : Bool) -> Void
-typealias StoreProgressBlock = (message : String) -> Void
+typealias StoreResultBlock = (_ result : Any?, _ fromLocal : Bool) -> Void
+typealias StoreProgressBlock = (_ message : String) -> Void
 
 class AGStorageController {
-    let bundleIdentifier = NSBundle.mainBundle().infoDictionary?["CFBundleIdentifier"] as! String
+    let bundleIdentifier = Bundle.main.infoDictionary?["CFBundleIdentifier"] as! String
 
-    private let operationQueue = NSOperationQueue()
+    fileprivate let operationQueue = OperationQueue()
 
-    lazy var applicationCacheDirectory : NSURL = {
-        var _cacheUrl = NSFileManager.defaultManager().URLsForDirectory(NSSearchPathDirectory.CachesDirectory, inDomains: NSSearchPathDomainMask.UserDomainMask).last
-        _cacheUrl = _cacheUrl?.URLByAppendingPathComponent(self.bundleIdentifier);
+    lazy var applicationCacheDirectory : URL = {
+        var _cacheUrl = FileManager.default.urls(for: FileManager.SearchPathDirectory.cachesDirectory, in: FileManager.SearchPathDomainMask.userDomainMask).last
+        _cacheUrl = _cacheUrl?.appendingPathComponent(self.bundleIdentifier);
         return _cacheUrl!
     }()
     
@@ -29,17 +29,17 @@ class AGStorageController {
     init() {
     }
     
-    func runBackgroundTask(block : ()->AnyObject?, completion : ((result : AnyObject?) -> Void)? = nil ) {
-        operationQueue.addOperationWithBlock { () -> Void in
+    func runBackgroundTask(_ block : @escaping ()->AnyObject?, completion : ((_ result : AnyObject?) -> Void)? = nil ) {
+        operationQueue.addOperation { () -> Void in
             let result = block()
-            NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                completion?(result: result)
+            OperationQueue.main.addOperation({ () -> Void in
+                completion?(result)
             })
         }
     }
     
-    func runMainThreadTask(block : () -> Void) {
-        NSOperationQueue.mainQueue().addOperationWithBlock(block);
+    func runMainThreadTask(_ block : @escaping () -> Void) {
+        OperationQueue.main.addOperation(block);
     }
     
     /*Storage*/
@@ -49,11 +49,11 @@ class AGStorageController {
     }
     
     /*Write*/
-    func writeJSONResponse(response : AnyObject, toDisk identifier : String, atURL url: NSURL) throws {
+    func writeJSONResponse(_ response : AnyObject, toDisk identifier : String, atURL url: URL) throws {
         do {
-            let data = try NSJSONSerialization.dataWithJSONObject(response, options: NSJSONWritingOptions.PrettyPrinted)
-            let fileUrl = NSURL(string: identifier, relativeToURL: url)
-            if data.writeToURL(fileUrl!, atomically: true) == false {
+            let data = try JSONSerialization.data(withJSONObject: response, options: JSONSerialization.WritingOptions.prettyPrinted)
+            let fileUrl = URL(string: identifier, relativeTo: url)
+            if ((try? data.write(to: fileUrl!, options: [.atomic])) != nil) == false {
                 throw NSError(domain: self.bundleIdentifier, code: 500, userInfo: [NSLocalizedDescriptionKey : "Failed all attempts to save reponse to disk: \(response)"])
             }
         }
@@ -62,26 +62,26 @@ class AGStorageController {
         }
     }
     
-    func writeJSONResponse(response : AnyObject, toDisk identifier : String) throws {
+    func writeJSONResponse(_ response : AnyObject, toDisk identifier : String) throws {
         try self.writeJSONResponse(response, toDisk: identifier, atURL: self.applicationCacheDirectory)
     }
     
     /*Delete*/
-    func deleteJSONFileFor(identifier : String, atURL url : NSURL) throws {
-        let fileUrl = NSURL(string: identifier, relativeToURL: url)
-        try NSFileManager.defaultManager().removeItemAtURL(fileUrl!)
+    func deleteJSONFileFor(_ identifier : String, atURL url : URL) throws {
+        let fileUrl = URL(string: identifier, relativeTo: url)
+        try FileManager.default.removeItem(at: fileUrl!)
     }
     
-    func deleteJSONFileFor(identifier : String) throws {
+    func deleteJSONFileFor(_ identifier : String) throws {
         try self.deleteJSONFileFor(identifier, atURL: self.applicationCacheDirectory)
     }
     
     /*Read*/
-    func jsonFileFor(identifier : String, atURL url : NSURL) throws -> AnyObject? {
-        let fileUrl = NSURL(string: identifier, relativeToURL: url)
-        if let data = NSData(contentsOfURL: fileUrl!) {
+    func jsonFileFor(_ identifier : String, atURL url : URL) throws -> AnyObject? {
+        let fileUrl = URL(string: identifier, relativeTo: url)
+        if let data = try? Data(contentsOf: fileUrl!) {
             do {
-                return try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)
+                return try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments)
             }
             catch let error {
                 throw error
@@ -90,22 +90,22 @@ class AGStorageController {
         throw NSError(domain: self.bundleIdentifier, code: 500, userInfo: [NSLocalizedDescriptionKey : "Unable to read file at \(fileUrl)"])
     }
     
-    func jsonFileFor(identifier : String) throws -> AnyObject? {
+    func jsonFileFor(_ identifier : String) throws -> AnyObject? {
         return try self.jsonFileFor(identifier, atURL: self.applicationCacheDirectory)
     }
 
     /*API*/
-    func processAPIResponse(result : AnyObject?, completion : StoreResultBlock) {
+    func processAPIResponse(_ result : AnyObject?, completion : StoreResultBlock) {
         if result is NSDictionary || result is NSArray {
-            completion(result: result, fromLocal: false)
+            completion(result, false)
         }
         else {
             if let error = result as? NSError {
-                completion(result: error, fromLocal: false)
+                completion(error, false)
             }
             else {
                 let error = NSError(domain: self.bundleIdentifier, code: 500, userInfo: [NSLocalizedDescriptionKey : "An unexpected error occured"])
-                completion(result: error, fromLocal: false)
+                completion(error, false)
             }
         }
    }

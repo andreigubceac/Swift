@@ -7,20 +7,20 @@
 
 import Alamofire
 
-typealias RESTResultBlock = (result : AnyObject?) -> Void
+typealias RESTResultBlock = (_ result : AnyObject?) -> Void
 
 class AGRESTController : Manager {
-    private var backgroundQueue = dispatch_queue_create("BackgroundQueue", DISPATCH_QUEUE_CONCURRENT)
+    fileprivate var backgroundQueue = DispatchQueue(label: "BackgroundQueue", attributes: DispatchQueue.Attributes.concurrent)
 
     /*Auth*/
-    private var username, password: String?
+    fileprivate var username, password: String?
     var baseUrl, token : String?
 
-    let dateFormatter   = NSDateFormatter()
+    let dateFormatter   = DateFormatter()
     
     /*Developer*/
     var logEnable   = false
-    private var _logString = String()
+    fileprivate var _logString = String()
     func logString() -> String {
         return _logString
     }
@@ -28,9 +28,9 @@ class AGRESTController : Manager {
         _logString.removeAll()
     }
     
-    private func appendConcsoleLog( text : String) {
+    fileprivate func appendConcsoleLog( _ text : String) {
         if logEnable {
-            _logString.appendContentsOf(text)
+            _logString.append(text)
         }
     }
 
@@ -47,14 +47,14 @@ class AGRESTController : Manager {
         self.baseUrl = baseUrl
     }
 
-    func URLStringForMethod(methodString : String) -> String {
-        let urlString   = self.baseUrl!.stringByAppendingString(methodString)
+    func URLStringForMethod(_ methodString : String) -> String {
+        let urlString   = self.baseUrl! + methodString
         return urlString
     }
     
-    func requestJSON(method: Alamofire.Method, _ URLString: URLStringConvertible, parameters: [ String : AnyObject ]? = nil, encoding: ParameterEncoding = .URL, resultBlock : RESTResultBlock ) -> Request {
+    func requestJSON(_ method: Alamofire.Method, _ URLString: URLStringConvertible, parameters: [ String : AnyObject ]? = nil, encoding: ParameterEncoding = .URL, resultBlock : RESTResultBlock ) -> Request {
         let headers = self.authorizeRequest()
-        self.appendConcsoleLog("[\(dateFormatter.stringFromDate(NSDate()))] Start <\(method)> \(URLString)\n {\(parameters)}\n")
+        self.appendConcsoleLog("[\(dateFormatter.stringFromDate(Date()))] Start <\(method)> \(URLString)\n {\(parameters)}\n")
         return super.request(method, URLString, parameters: parameters, encoding: encoding, headers: headers).response(queue: self.backgroundQueue, completionHandler: {[weak self] (NSURLRequest, NSHTTPURLResponse, NSData, error) -> Void in
             if NSHTTPURLResponse?.statusCode == 401 {
                 /*Session expired*/
@@ -82,7 +82,7 @@ class AGRESTController : Manager {
                 }
                 else {
                     
-                    guard let validData = NSData where validData.length > 0 else {
+                    guard let validData = NSData , validData.length > 0 else {
                         let failureReason = "JSON could not be serialized. Input data was nil or zero length."
                         let error = NSError(domain: "API", code: 500, userInfo: [NSLocalizedDescriptionKey : failureReason])
                         self!.appendConcsoleLog("\(error.localizedDescription)\n==================\n")
@@ -106,7 +106,7 @@ class AGRESTController : Manager {
     
     /*Sign The Request*/
     
-    func autosignInRequest(request : NSURLRequest, completion : RESTResultBlock) -> Void {
+    func autosignInRequest(_ request : URLRequest, completion : RESTResultBlock) -> Void {
         /*override*/
         self.token = nil
     }
@@ -117,7 +117,7 @@ class AGRESTController : Manager {
     }
     
     /*APNs*/
-    func logRemoteNotification(userInfo : [NSObject : AnyObject]) -> Void {
+    func logRemoteNotification(_ userInfo : [AnyHashable: Any]) -> Void {
         self.appendConcsoleLog("\nAPNs - Start ===============\n")
         if let dictionary = userInfo["aps"] as? NSDictionary {
             self.appendConcsoleLog(dictionary.description)

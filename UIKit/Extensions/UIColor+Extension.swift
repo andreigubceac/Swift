@@ -9,11 +9,11 @@ import UIKit
 
 extension UIColor {
     /*HEX*/
-    class func hexColor(hexString : String) -> UIColor {
+    class func hexColor(_ hexString : String) -> UIColor {
         /** https://gist.github.com/arshad/de147c42d7b3063ef7bc */
-        let hex = hexString.stringByTrimmingCharactersInSet(NSCharacterSet.alphanumericCharacterSet().invertedSet)
+        let hex = hexString.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int = UInt32()
-        NSScanner(string: hex).scanHexInt(&int)
+        Scanner(string: hex).scanHexInt32(&int)
         let a, r, g, b: UInt32
         switch hex.characters.count {
         case 3: // RGB (12-bit)

@@ -8,7 +8,7 @@
 
 import UIKit
 
-typealias ViewControllerProtocolBlock = (viewController : UIViewController, info : Any?) -> Void
+typealias ViewControllerProtocolBlock = (_ viewController : UIViewController, _ info : Any?) -> Void
 
 protocol ViewControllerProtocol : class
 {
@@ -33,11 +33,11 @@ extension UIViewController {
     }
     
     @objc func dismissViewControllerAnimated() {
-        self.dismissViewControllerAnimated(true , completion: nil)
+        self.dismiss(animated: true , completion: nil)
     }
     
     
-    func loadData(forced : Bool) {
+    func loadData(_ forced : Bool) {
         /*Override me*/
     }
     
@@ -56,7 +56,7 @@ extension UINavigationController {
         topViewController?.loadData()
     }
     
-    override func loadData(forced: Bool) {
+    override func loadData(_ forced: Bool) {
         topViewController?.loadData(forced)
     }
     
