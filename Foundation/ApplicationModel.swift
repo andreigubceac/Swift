@@ -8,59 +8,59 @@
 import Foundation
 
 @objc protocol ApplicationModelProtocol {
-    var identifier : String { get }
+    var identifier : String? { get }
     var name : String? { get }
-    func toDictionary() -> Dictionary<String,AnyObject>
+    func toDictionary() -> Dictionary<String,Any>
     
     @objc optional var date : Date? { get set }
 }
 
 class ApplicationModel : ApplicationModelProtocol {
-    fileprivate var _dictionary : Dictionary<String, AnyObject>!
+    internal var _dictionary : Dictionary<String, Any>!
     
-    class func identifierKey() -> String {
+    static func identifierKey() -> String {
         return "Id"
     }
     
-    class func nameKey() -> String {
+    static func emptyObject(with identifier : String) -> Self {
+        return self.init(dictionary: [self.identifierKey() : identifier])
+    }
+    
+    static func nameKey() -> String {
         return "Name"
     }
 
-    init(dictionary : Dictionary<String, AnyObject>) {
+    required init(dictionary : Dictionary<String, Any>) {
         _dictionary = dictionary
     }
     
     convenience init() {
-        self.init(dictionary: [type(of: self).identifierKey(): UUID.init().uuidString as AnyObject])
+        self.init(dictionary: [type(of: self).identifierKey(): UUID.init().uuidString])
     }
     
-    func update(_ dictionary : Dictionary<String, AnyObject>) {
+    func update(_ dictionary : Dictionary<String, Any>) {
         for (key, value) in dictionary {
             _dictionary.updateValue(value, forKey: key)
         }
     }
     
-    func setValue(_ value : AnyObject?, for key : String) {
-        _dictionary[key] = value
-    }
-    
-    @objc func toDictionary() -> Dictionary<String,AnyObject> {
+    @objc func toDictionary() -> Dictionary<String,Any> {
         return _dictionary!
     }
     
     /*ApplicationModelProtocol*/
-    @objc var identifier: String {
-        if let id = self[type(of: self).self.identifierKey()] as? NSNumber {
+    @objc var identifier: String? {
+        if let id = self[type(of: self).identifierKey()] as? NSNumber {
             return id.stringValue
         }
-        return self[type(of: self).self.identifierKey()] as! String
+        return self[type(of: self).identifierKey()] as? String
     }
     
     @objc var name: String? {
-        return self[type(of: self).self.nameKey()] as? String
+        return self[type(of: self).nameKey()] as? String
     }
 
-    subscript(key : String) -> AnyObject? {
+    subscript(key : String) -> Any? {
         get {
             return _dictionary[key]
         }
@@ -73,7 +73,7 @@ class ApplicationModel : ApplicationModelProtocol {
 extension ApplicationModel : CustomStringConvertible {
     
     var description: String {
-        return "\(self) : [\(_dictionary)]"
+        return _dictionary.description
     }
 
 }

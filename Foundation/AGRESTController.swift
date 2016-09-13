@@ -7,20 +7,20 @@
 
 import Alamofire
 
-typealias RESTResultBlock = (_ result : AnyObject?) -> Void
+typealias RESTResultBlock = (_ result : Any?) -> Void
 
-class AGRESTController : Manager {
-    fileprivate var backgroundQueue = DispatchQueue(label: "BackgroundQueue", attributes: DispatchQueue.Attributes.concurrent)
+class AGRESTController : SessionManager {
+    private var backgroundQueue = DispatchQueue(label: "BackgroundQueue", qos : DispatchQoS(qosClass: DispatchQoS.QoSClass.background, relativePriority: 0))
 
     /*Auth*/
-    fileprivate var username, password: String?
+    private var username, password: String?
     var baseUrl, token : String?
 
     let dateFormatter   = DateFormatter()
     
     /*Developer*/
     var logEnable   = false
-    fileprivate var _logString = String()
+    private var _logString = String()
     func logString() -> String {
         return _logString
     }
@@ -28,18 +28,18 @@ class AGRESTController : Manager {
         _logString.removeAll()
     }
     
-    fileprivate func appendConcsoleLog( _ text : String) {
+    private func appendConcsoleLog( _ text : String) {
         if logEnable {
             _logString.append(text)
         }
     }
 
     init(serverTrustPolicyManager : ServerTrustPolicyManager? = nil) {
-        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-        configuration.HTTPAdditionalHeaders = Manager.defaultHTTPHeaders
+        let configuration = URLSessionConfiguration.default
+        configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
         super.init(configuration: configuration, delegate: SessionDelegate(), serverTrustPolicyManager: serverTrustPolicyManager)
         self.dateFormatter.dateFormat   = "yyyy-MM-dd HH:mm"
-        self.dateFormatter.timeZone     = NSTimeZone(name: "UTC")
+        self.dateFormatter.timeZone     = TimeZone(identifier : "UTC")
     }
     
     convenience init(baseUrl : String) {
@@ -52,56 +52,56 @@ class AGRESTController : Manager {
         return urlString
     }
     
-    func requestJSON(_ method: Alamofire.Method, _ URLString: URLStringConvertible, parameters: [ String : AnyObject ]? = nil, encoding: ParameterEncoding = .URL, resultBlock : RESTResultBlock ) -> Request {
+    func requestJSON(_ method: HTTPMethod, _ URLString: URLStringConvertible, parameters: [ String : AnyObject ]? = nil, encoding: ParameterEncoding = .url, resultBlock : RESTResultBlock ) -> Request {
         let headers = self.authorizeRequest()
-        self.appendConcsoleLog("[\(dateFormatter.stringFromDate(Date()))] Start <\(method)> \(URLString)\n {\(parameters)}\n")
-        return super.request(method, URLString, parameters: parameters, encoding: encoding, headers: headers).response(queue: self.backgroundQueue, completionHandler: {[weak self] (NSURLRequest, NSHTTPURLResponse, NSData, error) -> Void in
-            if NSHTTPURLResponse?.statusCode == 401 {
+        self.appendConcsoleLog("[\(dateFormatter.string(from: Date()))] Start <\(method)> \(URLString)\n {\(parameters)}\n")
+        return super.request(URLString, withMethod: method, parameters: parameters, encoding: encoding, headers: headers).response { (URLRequest, HTTPURLResponse, Data, error) in
+            if HTTPURLResponse?.statusCode == 401 {
                 /*Session expired*/
-                self!.appendConcsoleLog("End Session Invalid 401\n==================\n")
+                self.appendConcsoleLog("End Session Invalid 401\n==================\n")
                 /*Call userSignIn method*/
-                self?.autosignInRequest(NSURLRequest!, completion: { (result) in
+                self.autosignInRequest(URLRequest!, completion: { (result) in
                     if result is NSError {
-                        resultBlock(result: result)
+                        resultBlock(result)
                     }
                     else {
-                        self?.requestJSON(method, URLString, parameters: parameters, encoding: encoding, resultBlock: resultBlock)
+                        let _ = self.requestJSON(method, URLString, parameters: parameters, encoding: encoding, resultBlock: resultBlock)
                     }
                 })
             }
             else {
-                if NSHTTPURLResponse != nil {
-                    self!.appendConcsoleLog("[\(self!.dateFormatter.stringFromDate(NSDate()))] End (\(NSHTTPURLResponse!.statusCode)) \(URLString) ")
+                if HTTPURLResponse != nil {
+                    self.appendConcsoleLog("[\(self.dateFormatter.string(from: Date()))] End (\(HTTPURLResponse!.statusCode)) \(URLString) ")
                 }
                 else {
-                    self!.appendConcsoleLog("[\(self!.dateFormatter.stringFromDate(NSDate()))] End \(URLString) ")
+                    self.appendConcsoleLog("[\(self.dateFormatter.string(from: Date()))] End \(URLString) ")
                 }
                 if error != nil {
-                    self!.appendConcsoleLog("\(error!.localizedDescription)\n==================\n")
-                    resultBlock(result: error)
+                    self.appendConcsoleLog("\(error!.localizedDescription)\n==================\n")
+                    resultBlock(error)
                 }
                 else {
                     
-                    guard let validData = NSData , validData.length > 0 else {
+                    guard let validData = Data , validData.count > 0 else {
                         let failureReason = "JSON could not be serialized. Input data was nil or zero length."
                         let error = NSError(domain: "API", code: 500, userInfo: [NSLocalizedDescriptionKey : failureReason])
-                        self!.appendConcsoleLog("\(error.localizedDescription)\n==================\n")
+                        self.appendConcsoleLog("\(error.localizedDescription)\n==================\n")
                         
-                        resultBlock(result: error)
+                        resultBlock(error)
                         return
                     }
                     
                     do {
-                        let JSON = try NSJSONSerialization.JSONObjectWithData(validData, options: .AllowFragments)
-                        self!.appendConcsoleLog("\(JSON)\n==================\n")
-                        resultBlock(result: JSON)
+                        let JSON = try JSONSerialization.jsonObject(with: validData, options: .allowFragments)
+                        self.appendConcsoleLog("\(JSON)\n==================\n")
+                        resultBlock(JSON)
                     } catch let error as NSError {
-                        self!.appendConcsoleLog("Error = \(error.localizedDescription)\nText\(NSString(data: validData, encoding: 4)))\n==================\n")
-                        resultBlock(result: error)
-                        }
+                        self.appendConcsoleLog("Error = \(error.localizedDescription)\nText\(NSString(data: validData, encoding: 4)))\n==================\n")
+                        resultBlock(error)
                     }
                 }
-            })
+            }
+        }
     }
     
     /*Sign The Request*/
@@ -117,7 +117,7 @@ class AGRESTController : Manager {
     }
     
     /*APNs*/
-    func logRemoteNotification(_ userInfo : [AnyHashable: Any]) -> Void {
+    func logRemoteNotification(_ userInfo : Dictionary<AnyHashable,Any>) -> Void {
         self.appendConcsoleLog("\nAPNs - Start ===============\n")
         if let dictionary = userInfo["aps"] as? NSDictionary {
             self.appendConcsoleLog(dictionary.description)
