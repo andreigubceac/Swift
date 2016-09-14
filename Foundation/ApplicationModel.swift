@@ -10,15 +10,15 @@ import Foundation
 @objc protocol ApplicationModelProtocol {
     var identifier : String? { get }
     var name : String? { get }
-    func toDictionary() -> Dictionary<String,Any>
+    func toDictionary() -> Dictionary<AnyHashable,Any>
     
     @objc optional var date : Date? { get set }
 }
 
 class ApplicationModel : ApplicationModelProtocol {
-    internal var _dictionary : Dictionary<String, Any>!
+    internal var _dictionary : Dictionary<AnyHashable, Any>!
     
-    static func identifierKey() -> String {
+    class func identifierKey() -> String {
         return "Id"
     }
     
@@ -26,11 +26,11 @@ class ApplicationModel : ApplicationModelProtocol {
         return self.init(dictionary: [self.identifierKey() : identifier])
     }
     
-    static func nameKey() -> String {
+    class func nameKey() -> String {
         return "Name"
     }
 
-    required init(dictionary : Dictionary<String, Any>) {
+    required init(dictionary : Dictionary<AnyHashable, Any>) {
         _dictionary = dictionary
     }
     
@@ -38,20 +38,20 @@ class ApplicationModel : ApplicationModelProtocol {
         self.init(dictionary: [type(of: self).identifierKey(): UUID.init().uuidString])
     }
     
-    func update(_ dictionary : Dictionary<String, Any>) {
+    func update(_ dictionary : Dictionary<AnyHashable, Any>) {
         for (key, value) in dictionary {
             _dictionary.updateValue(value, forKey: key)
         }
     }
     
-    @objc func toDictionary() -> Dictionary<String,Any> {
+    @objc func toDictionary() -> Dictionary<AnyHashable,Any> {
         return _dictionary!
     }
     
     /*ApplicationModelProtocol*/
     @objc var identifier: String? {
-        if let id = self[type(of: self).identifierKey()] as? NSNumber {
-            return id.stringValue
+        if let id = self[type(of: self).identifierKey()] as? Int {
+            return String(id)
         }
         return self[type(of: self).identifierKey()] as? String
     }
