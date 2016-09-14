@@ -29,7 +29,7 @@ class AGStorageController {
     init() {
     }
     
-    func runBackgroundTask(_ block : @escaping ()->AnyObject?, completion : ((_ result : AnyObject?) -> Void)? = nil ) {
+    func runBackgroundTask(_ block : @escaping ()->Any?, completion : ((_ result : Any?) -> Void)? = nil ) {
         operationQueue.addOperation { () -> Void in
             let result = block()
             OperationQueue.main.addOperation({ () -> Void in
@@ -49,7 +49,7 @@ class AGStorageController {
     }
     
     /*Write*/
-    func writeJSONResponse(_ response : AnyObject, toDisk identifier : String, atURL url: URL) throws {
+    func writeJSONResponse(_ response : Any, toDisk identifier : String, atURL url: URL) throws {
         do {
             let data = try JSONSerialization.data(withJSONObject: response, options: JSONSerialization.WritingOptions.prettyPrinted)
             let fileUrl = URL(string: identifier, relativeTo: url)
@@ -62,7 +62,7 @@ class AGStorageController {
         }
     }
     
-    func writeJSONResponse(_ response : AnyObject, toDisk identifier : String) throws {
+    func writeJSONResponse(_ response : Any, toDisk identifier : String) throws {
         try self.writeJSONResponse(response, toDisk: identifier, atURL: self.applicationCacheDirectory)
     }
     

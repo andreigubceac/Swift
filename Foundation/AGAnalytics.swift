@@ -9,7 +9,7 @@ import Foundation
 
 class AGAnalytics {
     
-    func logEvent(_ name : String, parameters : [String : AnyObject]?) -> Void {
+    func logEvent(_ name : String, parameters : [String : Any]?) -> Void {
         
     }
 }

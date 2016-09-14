@@ -52,15 +52,15 @@ class AGRESTController : SessionManager {
         return urlString
     }
     
-    func requestJSON(_ method: HTTPMethod, _ URLString: URLStringConvertible, parameters: [ String : AnyObject ]? = nil, encoding: ParameterEncoding = .url, resultBlock : RESTResultBlock ) -> Request {
-        let headers = self.authorizeRequest()
+    func requestJSON(_ method: HTTPMethod, _ URLString: URLConvertible, parameters: [ String : AnyObject ]? = nil, encoding: ParameterEncoding, resultBlock : @escaping RESTResultBlock ) -> Request {
+        let headers = authorizeRequest()
         self.appendConcsoleLog("[\(dateFormatter.string(from: Date()))] Start <\(method)> \(URLString)\n {\(parameters)}\n")
-        return super.request(URLString, withMethod: method, parameters: parameters, encoding: encoding, headers: headers).response { (URLRequest, HTTPURLResponse, Data, error) in
-            if HTTPURLResponse?.statusCode == 401 {
+        return super.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers).response(completionHandler: { (dataResponse) in
+            if let statusCode = dataResponse.response?.statusCode, statusCode == 401 {
                 /*Session expired*/
                 self.appendConcsoleLog("End Session Invalid 401\n==================\n")
                 /*Call userSignIn method*/
-                self.autosignInRequest(URLRequest!, completion: { (result) in
+                self.autosignInRequest(dataResponse.request!, completion: { (result) in
                     if result is NSError {
                         resultBlock(result)
                     }
@@ -70,19 +70,19 @@ class AGRESTController : SessionManager {
                 })
             }
             else {
-                if HTTPURLResponse != nil {
-                    self.appendConcsoleLog("[\(self.dateFormatter.string(from: Date()))] End (\(HTTPURLResponse!.statusCode)) \(URLString) ")
+                if let statusCode = dataResponse.response?.statusCode {
+                    self.appendConcsoleLog("[\(self.dateFormatter.string(from: Date()))] End (\(statusCode)) \(URLString) ")
                 }
                 else {
                     self.appendConcsoleLog("[\(self.dateFormatter.string(from: Date()))] End \(URLString) ")
                 }
-                if error != nil {
-                    self.appendConcsoleLog("\(error!.localizedDescription)\n==================\n")
+                if let error = dataResponse.error {
+                    self.appendConcsoleLog("\(error.localizedDescription)\n==================\n")
                     resultBlock(error)
                 }
                 else {
                     
-                    guard let validData = Data , validData.count > 0 else {
+                    guard let validData = dataResponse.data, validData.count > 0 else {
                         let failureReason = "JSON could not be serialized. Input data was nil or zero length."
                         let error = NSError(domain: "API", code: 500, userInfo: [NSLocalizedDescriptionKey : failureReason])
                         self.appendConcsoleLog("\(error.localizedDescription)\n==================\n")
@@ -101,7 +101,7 @@ class AGRESTController : SessionManager {
                     }
                 }
             }
-        }
+        })
     }
     
     /*Sign The Request*/
