@@ -38,43 +38,45 @@ class AGRESTController : SessionManager {
         let configuration = URLSessionConfiguration.default
         configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
         super.init(configuration: configuration, delegate: SessionDelegate(), serverTrustPolicyManager: serverTrustPolicyManager)
-        self.dateFormatter.dateFormat   = "yyyy-MM-dd HH:mm"
-        self.dateFormatter.timeZone     = TimeZone(identifier : "UTC")
+        dateFormatter.dateFormat   = "yyyy-MM-dd HH:mm"
+        dateFormatter.timeZone     = TimeZone(identifier : "UTC")
     }
     
     convenience init(baseUrl : String) {
         self.init()
         self.baseUrl = baseUrl
+        
     }
 
-    func URLStringForMethod(_ methodString : String) -> String {
-        let urlString   = self.baseUrl! + methodString
+    func URLStringForMethod(_ methodString : String) -> URLConvertible {
+        let urlString   = baseUrl! + methodString
         return urlString
     }
     
     func requestJSON(method: HTTPMethod, url: URLConvertible, parameters: [AnyHashable : Any]?, encoding: ParameterEncoding, resultBlock : @escaping RESTResultBlock ) -> Request {
-        let headers = authorizeRequest()
+//        let headers = authorizeRequest()
         appendConcsoleLog("[\(dateFormatter.string(from: Date()))] Start <\(method)> \(url)\n {\(parameters)}\n")
-        return super.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers).response(completionHandler: { (dataResponse) in
+        
+        return request(url).response(completionHandler: { (dataResponse) in
             if let statusCode = dataResponse.response?.statusCode, statusCode == 401 {
                 /*Session expired*/
                 self.appendConcsoleLog("End Session Invalid 401\n==================\n")
                 /*Call userSignIn method*/
-                self.autosignInRequest(dataResponse.request!, completion: { (result) in
+                self.autosignInRequest(request: dataResponse.request!, completion: { (result) in
                     if result is NSError {
                         resultBlock(result)
                     }
                     else {
-                        let _ = self.requestJSON(method, URLString, parameters: parameters, encoding: encoding, resultBlock: resultBlock)
+                        let _ = self.requestJSON(method: method, url: url, parameters: parameters, encoding: encoding, resultBlock: resultBlock)
                     }
                 })
             }
             else {
                 if let statusCode = dataResponse.response?.statusCode {
-                    self.appendConcsoleLog("[\(self.dateFormatter.string(from: Date()))] End (\(statusCode)) \(URLString) ")
+                    self.appendConcsoleLog("[\(self.dateFormatter.string(from: Date()))] End (\(statusCode)) \(url) ")
                 }
                 else {
-                    self.appendConcsoleLog("[\(self.dateFormatter.string(from: Date()))] End \(URLString) ")
+                    self.appendConcsoleLog("[\(self.dateFormatter.string(from: Date()))] End \(url) ")
                 }
                 if let error = dataResponse.error {
                     self.appendConcsoleLog("\(error.localizedDescription)\n==================\n")
@@ -106,9 +108,9 @@ class AGRESTController : SessionManager {
     
     /*Sign The Request*/
     
-    func autosignInRequest(_ request : URLRequest, completion : RESTResultBlock) -> Void {
+    func autosignInRequest(request : URLRequest, completion : @escaping RESTResultBlock) {
         /*override*/
-        self.token = nil
+        token = nil
     }
     
     func authorizeRequest() -> [String : String]? {
@@ -120,8 +122,8 @@ class AGRESTController : SessionManager {
     func logRemoteNotification(_ userInfo : Dictionary<AnyHashable,Any>) -> Void {
         self.appendConcsoleLog("\nAPNs - Start ===============\n")
         if let dictionary = userInfo["aps"] as? NSDictionary {
-            self.appendConcsoleLog(dictionary.description)
+            appendConcsoleLog(dictionary.description)
         }
-        self.appendConcsoleLog("\nAPNs - End  ================\n")
+        appendConcsoleLog("\nAPNs - End  ================\n")
     }
 }
