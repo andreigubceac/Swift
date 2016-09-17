@@ -15,8 +15,8 @@ extension UIButton {
         if action != nil {
             b.addTarget(target, action: action!, for: .touchUpInside)
         }
-        b.setBackgroundImage(UIImage(named: image), for: UIControlState())
-        b.frame.size = b.backgroundImage(for: UIControlState())!.size
+        b.setBackgroundImage(UIImage(named: image), for: .normal)
+        b.frame.size = b.backgroundImage(for: .normal)!.size
         return b
     }
 
@@ -25,15 +25,15 @@ extension UIButton {
         if action != nil {
             b.addTarget(target, action: action!, for: .touchUpInside)
         }
-        b.setTitle(title, for: UIControlState())
+        b.setTitle(title, for: .normal)
         b.sizeToFit()
         return b
     }
 
     class func navigationItem(_ target : AnyObject?, action : Selector?, image : String) -> UIButton {
         let b = self.buttonWith(target, action: action, image: image)
-        if let image = b.backgroundImage(for: UIControlState()) {
-            b.setBackgroundImage(image.withRenderingMode(.alwaysTemplate), for: UIControlState())
+        if let image = b.backgroundImage(for: .normal) {
+            b.setBackgroundImage(image.withRenderingMode(.alwaysTemplate), for: .normal)
         }
         return b
     }
