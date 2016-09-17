@@ -96,7 +96,7 @@ class AGStorageController {
 
     /*API*/
     func processAPIResponse(_ result : Any?, completion : @escaping StoreResultBlock) {
-        if result is NSDictionary || result is NSArray {
+        if result is Dictionary<AnyHashable,Any> || result is Array<Any> {
             completion(result, false)
         }
         else {

@@ -53,11 +53,11 @@ class AGRESTController : SessionManager {
         return urlString
     }
     
-    func requestJSON(method: HTTPMethod, url: URLConvertible, parameters: [AnyHashable : Any]?, encoding: ParameterEncoding, resultBlock : @escaping RESTResultBlock ) -> Request {
-//        let headers = authorizeRequest()
+    func requestJSON(method: HTTPMethod, url: URLConvertible, parameters: Parameters?, encoding: ParameterEncoding, resultBlock : @escaping RESTResultBlock ) -> Request {
         appendConcsoleLog("[\(dateFormatter.string(from: Date()))] Start <\(method)> \(url)\n {\(parameters)}\n")
         
-        return request(url).response(completionHandler: { (dataResponse) in
+        let headers = authorizeRequest()
+        return request(url, method: method, parameters: parameters, encoding: encoding, headers: headers).response(completionHandler: {(dataResponse) in
             if let statusCode = dataResponse.response?.statusCode, statusCode == 401 {
                 /*Session expired*/
                 self.appendConcsoleLog("End Session Invalid 401\n==================\n")
