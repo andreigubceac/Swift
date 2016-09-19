@@ -14,7 +14,8 @@ class AGRESTController : SessionManager {
 
     /*Auth*/
     private var username, password: String?
-    var baseUrl, token : String?
+    var baseUrl : String!
+    var token   : String?
 
     let dateFormatter   = DateFormatter()
     
@@ -48,7 +49,7 @@ class AGRESTController : SessionManager {
     }
 
     func URLStringForMethod(_ methodString : String) -> URLConvertible {
-        let urlString   = baseUrl! + methodString
+        let urlString   = baseUrl + methodString
         return urlString
     }
     
