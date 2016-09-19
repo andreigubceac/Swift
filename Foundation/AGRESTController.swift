@@ -28,7 +28,7 @@ class AGRESTController : SessionManager {
         _logString.removeAll()
     }
     
-    private func appendConcsoleLog( _ text : String) {
+    private func appendConcsoleLog(_ text : String) {
         if logEnable {
             _logString.append(text)
         }
@@ -45,7 +45,6 @@ class AGRESTController : SessionManager {
     convenience init(baseUrl : String) {
         self.init()
         self.baseUrl = baseUrl
-        
     }
 
     func URLStringForMethod(_ methodString : String) -> URLConvertible {
@@ -53,10 +52,15 @@ class AGRESTController : SessionManager {
         return urlString
     }
     
-    func requestJSON(method: HTTPMethod, url: URLConvertible, parameters: Parameters?, encoding: ParameterEncoding, resultBlock : @escaping RESTResultBlock ) -> Request {
-        appendConcsoleLog("[\(dateFormatter.string(from: Date()))] Start <\(method)> \(url)\n {\(parameters)}\n")
+    func requestJSON(method: HTTPMethod = .get,
+                     url: URLConvertible,
+                     parameters: Parameters? = nil,
+                     encoding: ParameterEncoding  = URLEncoding.default,
+                     resultBlock : @escaping RESTResultBlock ) -> Request {
         
+        appendConcsoleLog("[\(dateFormatter.string(from: Date()))] Start <\(method)> \(url)\n {\(parameters)}\n")
         let headers = authorizeRequest()
+        
         return request(url, method: method, parameters: parameters, encoding: encoding, headers: headers).response(completionHandler: {(dataResponse) in
             if let statusCode = dataResponse.response?.statusCode, statusCode == 401 {
                 /*Session expired*/
@@ -98,7 +102,7 @@ class AGRESTController : SessionManager {
                         self.appendConcsoleLog("\(JSON)\n==================\n")
                         resultBlock(JSON)
                     } catch let error as NSError {
-                        self.appendConcsoleLog("Error = \(error.localizedDescription)\nText\(NSString(data: validData, encoding: 4)))\n==================\n")
+                        self.appendConcsoleLog("Error = \(error.localizedDescription)\nText\(String(data: validData, encoding: .utf8)))\n==================\n")
                         resultBlock(error)
                     }
                 }
@@ -113,14 +117,14 @@ class AGRESTController : SessionManager {
         token = nil
     }
     
-    func authorizeRequest() -> [String : String]? {
+    func authorizeRequest() -> HTTPHeaders? {
         /*Override this method*/
         return nil
     }
     
     /*APNs*/
     func logRemoteNotification(_ userInfo : Dictionary<AnyHashable,Any>) -> Void {
-        self.appendConcsoleLog("\nAPNs - Start ===============\n")
+        appendConcsoleLog("\nAPNs - Start ===============\n")
         if let dictionary = userInfo["aps"] as? NSDictionary {
             appendConcsoleLog(dictionary.description)
         }
