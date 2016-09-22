@@ -39,7 +39,7 @@ extension UIView {
             layer.masksToBounds = true
         }
     }
-    @IBInspectable
+
     var fullRounded : Bool {
         get {
             return self.cornerRadius == self.width / 2
