@@ -18,7 +18,7 @@ import UIKit
  */
 
 class SlideToPerformButton: UIButton {
-    private var arrowImageView : UIImageView! = nil
+    fileprivate var arrowImageView : UIImageView! = nil
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -34,7 +34,7 @@ class SlideToPerformButton: UIButton {
         arrowImageView.center.x = titleLabel!.left - arrowImageView.width - 10
     }
     
-    @objc private func dragInside(g : UIPanGestureRecognizer) {
+    @objc fileprivate func dragInside(_ g : UIPanGestureRecognizer) {
         if g.state == .began {
         }
         else if g.state == .changed {

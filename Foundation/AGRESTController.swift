@@ -10,10 +10,10 @@ import Alamofire
 typealias RESTResultBlock = (_ result : Any?) -> Void
 
 class AGRESTController : SessionManager {
-    private var backgroundQueue = DispatchQueue(label: "BackgroundQueue", qos : DispatchQoS(qosClass: DispatchQoS.QoSClass.background, relativePriority: 0))
+    fileprivate var backgroundQueue = DispatchQueue(label: "BackgroundQueue", qos : DispatchQoS(qosClass: DispatchQoS.QoSClass.background, relativePriority: 0))
 
     /*Auth*/
-    private var username, password: String?
+    fileprivate var username, password: String?
     var baseUrl : String!
     var token   : String?
 
@@ -21,7 +21,7 @@ class AGRESTController : SessionManager {
     
     /*Developer*/
     var logEnable   = false
-    private var _logString = String()
+    fileprivate var _logString = String()
     func logString() -> String {
         return _logString
     }
@@ -29,7 +29,7 @@ class AGRESTController : SessionManager {
         _logString.removeAll()
     }
     
-    private func appendConcsoleLog(_ text : String) {
+    fileprivate func appendConcsoleLog(_ text : String) {
         if logEnable {
             _logString.append(text)
         }

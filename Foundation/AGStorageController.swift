@@ -13,7 +13,7 @@ typealias StoreProgressBlock = (_ message : String) -> Void
 class AGStorageController {
     let bundleIdentifier = (Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String) ?? ""
 
-    private let operationQueue = OperationQueue()
+    fileprivate let operationQueue = OperationQueue()
 
     lazy var applicationCacheDirectory : URL = {
         var _cacheUrl = FileManager.default.urls(for: FileManager.SearchPathDirectory.cachesDirectory, in: FileManager.SearchPathDomainMask.userDomainMask).last
