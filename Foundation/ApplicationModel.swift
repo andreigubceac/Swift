@@ -15,52 +15,52 @@ import Foundation
     @objc optional var date : Date? { get set }
 }
 
-class ApplicationModel : ApplicationModelProtocol {
+open class ApplicationModel : ApplicationModelProtocol {
     internal var _dictionary : Dictionary<AnyHashable, Any>!
     
-    class func identifierKey() -> String {
+    public class func identifierKey() -> String {
         return "Id"
     }
     
-    static func emptyObject(with identifier : String) -> Self {
+    public static func emptyObject(with identifier : String) -> Self {
         return self.init(dictionary: [self.identifierKey() : identifier])
     }
     
-    class func nameKey() -> String {
+    public class func nameKey() -> String {
         return "Name"
     }
 
-    required init(dictionary : Dictionary<AnyHashable, Any>) {
+    required public init(dictionary : Dictionary<AnyHashable, Any>) {
         _dictionary = dictionary
     }
     
-    convenience init() {
+    public convenience init() {
         self.init(dictionary: [type(of: self).identifierKey(): UUID.init().uuidString])
     }
     
-    func update(_ dictionary : Dictionary<AnyHashable, Any>) {
+    public func update(_ dictionary : Dictionary<AnyHashable, Any>) {
         for (key, value) in dictionary {
             _dictionary.updateValue(value, forKey: key)
         }
     }
     
-    @objc func toDictionary() -> Dictionary<AnyHashable,Any> {
+    @objc public func toDictionary() -> Dictionary<AnyHashable,Any> {
         return _dictionary!
     }
     
     /*ApplicationModelProtocol*/
-    @objc var identifier: String? {
-        if let id = self[type(of: self).identifierKey()] as? Int {
-            return String(id)
+    @objc public var identifier: String? {
+        if let id = self[type(of: self).identifierKey()] as? NSNumber {
+            return id.stringValue
         }
         return self[type(of: self).identifierKey()] as? String
     }
     
-    @objc var name: String? {
+    @objc public var name: String? {
         return self[type(of: self).nameKey()] as? String
     }
 
-    subscript(key : String) -> Any? {
+    public subscript(key : AnyHashable) -> Any? {
         get {
             return _dictionary[key]
         }
@@ -72,7 +72,7 @@ class ApplicationModel : ApplicationModelProtocol {
 
 extension ApplicationModel : CustomStringConvertible {
     
-    var description: String {
+    public var description: String {
         return _dictionary.description
     }
 
