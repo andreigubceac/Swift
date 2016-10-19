@@ -1,9 +1,8 @@
 //
 //  ViewControllerProtocol.swift
-//  FourSynapses
 //
 //  Created by Andrei Gubceac on 1/20/16.
-//  Copyright © 2016 4 Synapses. All rights reserved.
+//  Copyright © 2016. All rights reserved.
 //
 
 import UIKit
