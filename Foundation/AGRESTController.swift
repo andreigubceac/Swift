@@ -7,7 +7,7 @@
 
 import Alamofire
 
-typealias RESTResultBlock = (_ result : Any?) -> Void
+typealias RESTResultBlock = (_ result : Any) -> Void
 
 class AGRESTController : SessionManager {
     fileprivate var backgroundQueue = DispatchQueue(label: "BackgroundQueue", qos : DispatchQoS(qosClass: DispatchQoS.QoSClass.background, relativePriority: 0))
