@@ -8,7 +8,7 @@
 import Foundation
 
 @objc protocol ApplicationModelProtocol {
-    var identifier : String? { get }
+    var identifier : AnyHashable? { get }
     var name : String? { get }
     func toDictionary() -> Dictionary<AnyHashable,Any>
     
@@ -22,7 +22,7 @@ open class ApplicationModel : ApplicationModelProtocol {
         return "Id"
     }
     
-    public static func emptyObject(with identifier : String) -> Self {
+    public static func emptyObject(with identifier : AnyHashable) -> Self {
         return self.init(dictionary: [self.identifierKey() : identifier])
     }
     
@@ -49,11 +49,8 @@ open class ApplicationModel : ApplicationModelProtocol {
     }
     
     /*ApplicationModelProtocol*/
-    @objc public var identifier: String? {
-        if let id = self[type(of: self).identifierKey()] as? NSNumber {
-            return id.stringValue
-        }
-        return self[type(of: self).identifierKey()] as? String
+    @objc public var identifier: AnyHashable? {
+        return self[type(of: self).identifierKey()] as? AnyHashable
     }
     
     @objc public var name: String? {
