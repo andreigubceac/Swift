@@ -20,7 +20,7 @@ class ConsoleViewController: ViewController {
 
         // Do any additional setup after loading the view.
         self.title = "Console"
-        self.textView.text = self.storage?.rest?.logString()
+        self.textView.text = self.storage?.rest.logString()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Clear", style: UIBarButtonItemStyle.plain, target: self, action: #selector(ConsoleViewController.clearAction(_:)))
     }
     
@@ -41,7 +41,7 @@ class ConsoleViewController: ViewController {
     }
     
     func clearAction(_ sender : AnyObject?) {
-        self.storage?.rest?.logClear()
+        self.storage?.rest.logClear()
         self.textView.text = nil
     }
     
@@ -50,7 +50,7 @@ class ConsoleViewController: ViewController {
     }
     
     func syncCalendarDidFinish(_ n : Notification?) {
-        self.textView.text = self.storage?.rest?.logString()
+        self.textView.text = self.storage?.rest.logString()
         self.textView.scrollRangeToVisible(NSMakeRange(self.textView.text.characters.count-1, 0))
     }
 }
