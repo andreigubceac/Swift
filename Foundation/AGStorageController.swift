@@ -50,16 +50,9 @@ class AGStorageController {
     
     /*Write*/
     func writeJSONResponse(_ response: Any, toDisk identifier: String, atURL url: URL) throws {
-        do {
-            let data = try JSONSerialization.data(withJSONObject: response, options: JSONSerialization.WritingOptions.prettyPrinted)
-            let fileUrl = URL(string: identifier, relativeTo: url)!
-            if ((try? data.write(to: fileUrl, options: [NSData.WritingOptions.atomic])) != nil) == false {
-                throw NSError(domain: bundleIdentifier, code: 500, userInfo: [NSLocalizedDescriptionKey: "Failed all attempts to save reponse to disk: \(response)"])
-            }
-        }
-        catch let error {
-            throw error
-        }
+        let data = try JSONSerialization.data(withJSONObject: response, options: JSONSerialization.WritingOptions.prettyPrinted)
+        let fileUrl = URL(string: identifier, relativeTo: url)!
+        try data.write(to: fileUrl, options: [NSData.WritingOptions.atomic])
     }
     
     func writeJSONResponse(_ response: Any, toDisk identifier: String) throws {
