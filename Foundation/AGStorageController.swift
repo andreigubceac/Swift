@@ -27,6 +27,14 @@ class AGStorageController {
     }
     
     init() {
+        if FileManager.default.fileExists(atPath: applicationCacheDirectory.path) == false {
+            do {
+                let _ = try FileManager.default.createDirectory(at: applicationCacheDirectory, withIntermediateDirectories: true, attributes: nil)
+            }
+            catch let error {
+                debugPrint(error)
+            }
+        }
     }
     
     func runBackgroundTask(_ block: @escaping ()->Any?, completion: ((_ result : Any?) -> Void)? = nil ) {
@@ -51,7 +59,7 @@ class AGStorageController {
     /*Write*/
     func writeJSONResponse(_ response: Any, toDisk identifier: String, atURL url: URL) throws {
         let data = try JSONSerialization.data(withJSONObject: response, options: JSONSerialization.WritingOptions.prettyPrinted)
-        let fileUrl = URL(string: identifier, relativeTo: url)!
+        let fileUrl = url.appendingPathComponent(identifier)
         try data.write(to: fileUrl, options: [NSData.WritingOptions.atomic])
     }
     
@@ -61,8 +69,8 @@ class AGStorageController {
     
     /*Delete*/
     func deleteJSONFileFor(_ identifier: String, atURL url: URL) throws {
-        let fileUrl = URL(string: identifier, relativeTo: url)
-        try FileManager.default.removeItem(at: fileUrl!)
+        let fileUrl = url.appendingPathComponent(identifier)
+        try FileManager.default.removeItem(at: fileUrl)
     }
     
     func deleteJSONFileFor(_ identifier: String) throws {
@@ -71,8 +79,8 @@ class AGStorageController {
     
     /*Read*/
     func jsonFileFor(_ identifier: String, atURL url: URL) throws -> Any? {
-        let fileUrl = URL(string: identifier, relativeTo: url)
-        if let data = try? Data(contentsOf: fileUrl!) {
+        let fileUrl = url.appendingPathComponent(identifier)
+        if let data = try? Data(contentsOf: fileUrl) {
             do {
                 return try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments)
             }
