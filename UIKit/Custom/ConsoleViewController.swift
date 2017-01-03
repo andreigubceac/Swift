@@ -19,38 +19,42 @@ class ConsoleViewController: ViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        self.title = "Console"
-        self.textView.text = self.storage?.rest.logString()
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Clear", style: UIBarButtonItemStyle.plain, target: self, action: #selector(ConsoleViewController.clearAction(_:)))
+        title = "Console"
+        textView.text = storage?.rest.logString()
+        let clearItem = UIBarButtonItem(title: "Clear", style: UIBarButtonItemStyle.plain, target: self, action: #selector(clearAction(_:)))
+        if let count = navigationController?.viewControllers.count, count > 1 {
+            navigationItem.rightBarButtonItem = clearItem
+        }
+        else {
+            navigationItem.leftBarButtonItem = clearItem
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.textView.scrollRangeToVisible(NSMakeRange(self.textView.text.characters.count-1, 0))
+        textView.scrollRangeToVisible(NSMakeRange(textView.text.characters.count-1, 0))
     }
     
     var textView : UITextView {
-        get {
-            return self.view as! UITextView
-        }
+        return view as! UITextView
     }
     
     func clearAction(_ sender : AnyObject?) {
-        self.storage?.rest.logClear()
-        self.textView.text = nil
+        storage?.rest.logClear()
+        textView.text = nil
     }
     
     func syncCalendarWillStart(_ n : Notification?) {
-        self.textView.text.append(NSLocalizedString("Fetching...", comment: "Fetching..."))
+        textView.text.append(NSLocalizedString("Fetching...", comment: "Fetching..."))
     }
     
     func syncCalendarDidFinish(_ n : Notification?) {
-        self.textView.text = self.storage?.rest.logString()
-        self.textView.scrollRangeToVisible(NSMakeRange(self.textView.text.characters.count-1, 0))
+        textView.text = storage?.rest.logString()
+        textView.scrollRangeToVisible(NSMakeRange(textView.text.characters.count-1, 0))
     }
 }
