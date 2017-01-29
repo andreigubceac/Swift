@@ -30,9 +30,8 @@ extension UIColor {
 }
 
 protocol UIColorProtocol {
-    static func viewControllerMainBackgroundColor() -> UIColor
-    static func viewControllerSecondaryBackgroundColor() -> UIColor
-    
-    static func textColor() -> UIColor
+    static var viewControllerMainBackgroundColor: UIColor { get }
+    static var viewControllerSecondaryBackgroundColor: UIColor { get }
+    static var textColor: UIColor { get }
 
 }
