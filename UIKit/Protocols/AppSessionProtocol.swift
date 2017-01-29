@@ -12,7 +12,7 @@ protocol AppSessionProtocol {
     
     func closeAppSession()
     
-    func handleError(error: NSError)
+    func handle(error: NSError)
 }
 
 extension UIApplicationDelegate {
