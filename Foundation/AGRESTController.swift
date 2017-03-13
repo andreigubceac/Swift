@@ -62,7 +62,7 @@ class AGRESTController : SessionManager {
         appendConcsoleLog("[\(dateFormatter.string(from: Date()))] Start <\(method)> \(url)\n {\(parameters)}\n")
         let headers = authorizeRequest()
         
-        return request(url, method: method, parameters: parameters, encoding: encoding, headers: headers).response(completionHandler: {(dataResponse) in
+        return request(url, method: method, parameters: parameters, encoding: encoding, headers: headers).response(queue: backgroundQueue, completionHandler: {(dataResponse) in
             if let statusCode = dataResponse.response?.statusCode, statusCode == 401 {
                 /*Session expired*/
                 self.appendConcsoleLog("End Session Invalid 401\n==================\n")
