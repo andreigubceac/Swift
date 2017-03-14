@@ -91,7 +91,7 @@ class AGRESTController : SessionManager {
                     
                     guard let validData = dataResponse.data, validData.count > 0 else {
                         let failureReason = "JSON could not be serialized. Input data was nil or zero length."
-                        let error = NSError(domain: "API", code: 500, userInfo: [NSLocalizedDescriptionKey : failureReason])
+                        let error = NSError(domain: "API", code: (dataResponse.response?.statusCode ?? 500), userInfo: [NSLocalizedDescriptionKey : failureReason])
                         self.appendConcsoleLog("\(error.localizedDescription)\n==================\n")
                         
                         resultBlock(error)
