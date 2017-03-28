@@ -59,7 +59,7 @@ class AGRESTController : SessionManager {
                      encoding: ParameterEncoding  = URLEncoding.default,
                      resultBlock : @escaping RESTResultBlock ) -> Request {
         
-        appendConcsoleLog("[\(dateFormatter.string(from: Date()))] Start <\(method)> \(url)\n {\(parameters)}\n")
+        appendConcsoleLog("[\(dateFormatter.string(from: Date()))] Start <\(method)> \(url)\n {\(String(describing: parameters))}\n")
         let headers = authorizeRequest()
         
         return request(url, method: method, parameters: parameters, encoding: encoding, headers: headers).response(queue: backgroundQueue, completionHandler: {(dataResponse) in
@@ -103,7 +103,7 @@ class AGRESTController : SessionManager {
                         self.appendConcsoleLog("\(JSON)\n==================\n")
                         resultBlock(JSON)
                     } catch let error as NSError {
-                        self.appendConcsoleLog("Error = \(error.localizedDescription)\nText\(String(data: validData, encoding: .utf8)))\n==================\n")
+                        self.appendConcsoleLog("Error = \(error.localizedDescription)\nText\(String(describing: String(data: validData, encoding: .utf8))))\n==================\n")
                         resultBlock(error)
                     }
                 }
