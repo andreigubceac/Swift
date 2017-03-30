@@ -14,7 +14,7 @@ import UIKit
     
     @objc optional func handle(success: String?)
 
-    @objc optional func handle(error: NSError)
+    @objc optional func handle(error: Error)
     
     @objc optional func handle(progress message: Any)
 }
