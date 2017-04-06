@@ -45,7 +45,7 @@ extension UIView {
             return self.cornerRadius == self.width / 2
         }
         set {
-            self.cornerRadius = self.width / 2
+            self.cornerRadius = newValue ? self.width / 2 : 0
         }
     }
 }
