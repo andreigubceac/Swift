@@ -11,13 +11,13 @@ typealias StoreResultBlock = (_ result: Any?, _ fromLocal: Bool) -> Void
 typealias StoreProgressBlock = (_ message: String) -> Void
 
 class AGStorageController {
-    let bundleIdentifier = (Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String) ?? ""
+    static let bundleIdentifier = Bundle.main.infoDictionary!["CFBundleIdentifier"] as! String
 
     fileprivate let operationQueue = OperationQueue()
 
-    lazy var applicationCacheDirectory : URL = {
+    static var applicationCacheDirectory : URL = {
         var _cacheUrl = FileManager.default.urls(for: FileManager.SearchPathDirectory.cachesDirectory, in: FileManager.SearchPathDomainMask.userDomainMask).last
-        _cacheUrl = _cacheUrl?.appendingPathComponent(self.bundleIdentifier)
+        _cacheUrl = _cacheUrl?.appendingPathComponent(AGStorageController.bundleIdentifier)
         return _cacheUrl!
     }()
     
@@ -27,9 +27,9 @@ class AGStorageController {
     }
     
     init() {
-        if FileManager.default.fileExists(atPath: applicationCacheDirectory.path) == false {
+        if FileManager.default.fileExists(atPath: AGStorageController.applicationCacheDirectory.path) == false {
             do {
-                let _ = try FileManager.default.createDirectory(at: applicationCacheDirectory, withIntermediateDirectories: true, attributes: nil)
+                let _ = try FileManager.default.createDirectory(at: AGStorageController.applicationCacheDirectory, withIntermediateDirectories: true, attributes: nil)
             }
             catch let error {
                 debugPrint(error)
@@ -57,28 +57,20 @@ class AGStorageController {
     }
     
     /*Write*/
-    func writeJSONResponse(_ response: Any, toDisk identifier: String, atURL url: URL) throws {
+    func writeJSONResponse(_ response: Any, toDisk identifier: String, atURL url: URL = AGStorageController.applicationCacheDirectory) throws {
         let data = try JSONSerialization.data(withJSONObject: response, options: JSONSerialization.WritingOptions.prettyPrinted)
         let fileUrl = url.appendingPathComponent(identifier)
         try data.write(to: fileUrl, options: [NSData.WritingOptions.atomic])
     }
     
-    func writeJSONResponse(_ response: Any, toDisk identifier: String) throws {
-        try writeJSONResponse(response, toDisk: identifier, atURL: applicationCacheDirectory)
-    }
-    
     /*Delete*/
-    func deleteJSONFileFor(_ identifier: String, atURL url: URL) throws {
+    func deleteJSONFileFor(_ identifier: String, atURL url: URL = AGStorageController.applicationCacheDirectory) throws {
         let fileUrl = url.appendingPathComponent(identifier)
         try FileManager.default.removeItem(at: fileUrl)
     }
     
-    func deleteJSONFileFor(_ identifier: String) throws {
-        try deleteJSONFileFor(identifier, atURL: applicationCacheDirectory)
-    }
-    
     /*Read*/
-    func jsonFileFor(_ identifier: String, atURL url: URL) throws -> Any? {
+    func jsonFileFor(_ identifier: String, atURL url: URL = AGStorageController.applicationCacheDirectory) throws -> Any? {
         let fileUrl = url.appendingPathComponent(identifier)
         if let data = try? Data(contentsOf: fileUrl) {
             do {
@@ -88,13 +80,9 @@ class AGStorageController {
                 throw error
             }
         }
-        throw NSError(domain: bundleIdentifier, code: 500, userInfo: [NSLocalizedDescriptionKey: "Unable to read file at \(fileUrl)"])
+        throw NSError(domain: AGStorageController.bundleIdentifier, code: 500, userInfo: [NSLocalizedDescriptionKey: "Unable to read file at \(fileUrl)"])
     }
     
-    func jsonFileFor(_ identifier: String) throws -> Any? {
-        return try jsonFileFor(identifier, atURL: applicationCacheDirectory)
-    }
-
     /*API*/
     func processAPIResponse(_ result: Any?, completion: @escaping StoreResultBlock) {
         if result is Dictionary<AnyHashable,Any> || result is Array<Any> {
@@ -105,7 +93,7 @@ class AGStorageController {
                 completion(error, false)
             }
             else {
-                completion(NSError(domain: bundleIdentifier, code: 500, userInfo: [NSLocalizedDescriptionKey : "An unexpected error occured"]), false)
+                completion(NSError(domain: AGStorageController.bundleIdentifier, code: 500, userInfo: [NSLocalizedDescriptionKey : "An unexpected error occured"]), false)
             }
         }
    }
