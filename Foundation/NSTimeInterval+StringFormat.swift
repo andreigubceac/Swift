@@ -26,6 +26,9 @@ extension TimeInterval {
             let weeks = dd / 7
             return String(weeks) + " " + (weeks > 1 ? NSLocalizedString("weeks", comment: "weeks") :NSLocalizedString("week", comment: "week"))
         }
+        if hh > 0 {
+            return ("\(hh) hr" + (hh == 1 ? "" : "s"))
+        }
         return formatHrMin()
     }
     
