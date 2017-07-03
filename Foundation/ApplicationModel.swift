@@ -7,12 +7,12 @@
 
 import Foundation
 
-@objc protocol ApplicationModelProtocol {
+protocol ApplicationModelProtocol {
     var identifier : AnyHashable? { get }
     var name : String? { get }
     func toDictionary() -> Dictionary<AnyHashable,Any>
     
-    @objc optional var date : Date? { get set }
+    optional var date : Date? { get set }
 }
 
 open class ApplicationModel : ApplicationModelProtocol {
@@ -44,16 +44,16 @@ open class ApplicationModel : ApplicationModelProtocol {
         }
     }
     
-    @objc public func toDictionary() -> Dictionary<AnyHashable,Any> {
+    public func toDictionary() -> Dictionary<AnyHashable,Any> {
         return _dictionary!
     }
     
     /*ApplicationModelProtocol*/
-    @objc public var identifier: AnyHashable? {
+    public var identifier: AnyHashable? {
         return self[type(of: self).identifierKey()] as? AnyHashable
     }
     
-    @objc public var name: String? {
+    public var name: String? {
         return self[type(of: self).nameKey()] as? String
     }
 

@@ -16,13 +16,12 @@ protocol ViewControllerProtocol : class
     
 }
 
-
 extension UIViewController {
     var application : AppDelegate {
         return AppDelegate.shared
     }
     
-    var storage : StorageController {
+    var storage : AGStorageController {
         return application.storage!
     }
     
@@ -34,16 +33,15 @@ extension UIViewController {
         self.dismiss(animated: true , completion: nil)
     }
     
-    
-    func loadData(_ forced : Bool) {
+    @objc func loadData(_ forced : Bool) {
         /*Override me*/
     }
     
-    func loadData() {
+    @objc func loadData() {
         loadData(false)
     }
     
-    func updateUI() {
+    @objc func updateUI() {
         /*Override me*/
     }
 }
