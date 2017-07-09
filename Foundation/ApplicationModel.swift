@@ -12,10 +12,12 @@ protocol ApplicationModelProtocol {
     var name : String? { get }
     func toDictionary() -> Dictionary<AnyHashable,Any>
     
-    optional var date : Date? { get set }
+    var date : Date? { get set }
 }
 
 open class ApplicationModel : ApplicationModelProtocol {
+    var date: Date?
+    
     internal var _dictionary : Dictionary<AnyHashable, Any>!
     
     public class func identifierKey() -> String {
