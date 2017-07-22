@@ -35,12 +35,8 @@ extension UIViewController {
     }
     
     
-    func loadData(_ forced : Bool) {
+    func loadData(_ forced : Bool = false) {
         /*Override me*/
-    }
-    
-    func loadData() {
-        loadData(false)
     }
     
     func updateUI() {
@@ -50,11 +46,7 @@ extension UIViewController {
 
 extension UINavigationController {
     
-    override func loadData() {
-        topViewController?.loadData()
-    }
-    
-    override func loadData(_ forced: Bool) {
+    override func loadData(_ forced: Bool = false) {
         topViewController?.loadData(forced)
     }
     
