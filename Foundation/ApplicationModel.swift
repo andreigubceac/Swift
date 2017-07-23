@@ -7,72 +7,17 @@
 
 import Foundation
 
-protocol ApplicationModelProtocol {
+protocol ApplicationModelProtocol: Codable {
     var identifier : AnyHashable? { get }
     var name : String? { get }
-    func toDictionary() -> Dictionary<AnyHashable,Any>
+    var toDictionary: Dictionary<AnyHashable,Any> { get }
     
     var date : Date? { get set }
 }
 
-open class ApplicationModel : ApplicationModelProtocol {
+open class ApplicationModel {
     var date: Date?
-    
-    internal var _dictionary : Dictionary<AnyHashable, Any>!
-    
-    public class func identifierKey() -> String {
-        return "Id"
-    }
-    
-    public static func emptyObject(with identifier : AnyHashable) -> Self {
-        return self.init(dictionary: [self.identifierKey() : identifier])
-    }
-    
-    public class func nameKey() -> String {
-        return "Name"
-    }
-
-    required public init(dictionary : Dictionary<AnyHashable, Any>) {
-        _dictionary = dictionary
-    }
-    
-    public convenience init() {
-        self.init(dictionary: [type(of: self).identifierKey(): UUID.init().uuidString])
-    }
-    
-    public func update(_ dictionary : Dictionary<AnyHashable, Any>) {
-        for (key, value) in dictionary {
-            _dictionary.updateValue(value, forKey: key)
-        }
-    }
-    
-    public func toDictionary() -> Dictionary<AnyHashable,Any> {
-        return _dictionary!
-    }
-    
-    /*ApplicationModelProtocol*/
-    public var identifier: AnyHashable? {
-        return self[type(of: self).identifierKey()] as? AnyHashable
-    }
-    
-    public var name: String? {
-        return self[type(of: self).nameKey()] as? String
-    }
-
-    public subscript(key : AnyHashable) -> Any? {
-        get {
-            return _dictionary[key]
-        }
-        set {
-            _dictionary[key] = newValue
-        }
+    func test() {
     }
 }
 
-extension ApplicationModel : CustomStringConvertible {
-    
-    public var description: String {
-        return _dictionary.description
-    }
-
-}

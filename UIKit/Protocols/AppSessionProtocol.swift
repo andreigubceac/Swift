@@ -6,17 +6,17 @@
 
 import UIKit
 
-@objc protocol AppSessionProtocol {
+protocol AppSessionProtocol {
 
     func openAppSession()
     
     func closeAppSession()
     
-    @objc optional func handle(success: String?)
+    func handle(success: String?)
 
-    @objc optional func handle(error: Error)
+    func handle(error: Error)
     
-    @objc optional func handle(progress message: Any)
+    func handle(progress message: Any)
 }
 
 extension UIApplicationDelegate {

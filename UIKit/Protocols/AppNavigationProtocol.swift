@@ -7,12 +7,12 @@
 
 import UIKit
 
-@objc protocol AppNavigationProtocol {
+protocol AppNavigationProtocol {
 
     var topViewController : UIViewController { get }
     
-    @objc optional func showWelcomeViewController(animated : Bool)
-    @objc optional func showHomeViewController(animated : Bool)
+    func showWelcomeViewController(animated : Bool)
+    func showHomeViewController(animated : Bool)
     
 }
 

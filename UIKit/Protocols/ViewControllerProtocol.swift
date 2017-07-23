@@ -16,6 +16,7 @@ protocol ViewControllerProtocol : class
     
 }
 
+
 extension UIViewController {
     var application : AppDelegate {
         return AppDelegate.shared
@@ -29,34 +30,20 @@ extension UIViewController {
         return NSSelectorFromString("dismissViewControllerAnimated");
     }
     
-    @objc func dismissViewControllerAnimated() {
+    func dismissViewControllerAnimated() {
         self.dismiss(animated: true , completion: nil)
     }
     
-    @objc func loadData(_ forced : Bool) {
+    
+    func loadData(_ forced : Bool = false) {
         /*Override me*/
     }
     
-    @objc func loadData() {
-        loadData(false)
-    }
-    
-    @objc func updateUI() {
+    func updateUI() {
         /*Override me*/
     }
 }
 
 extension UINavigationController {
     
-    override func loadData() {
-        topViewController?.loadData()
-    }
-    
-    override func loadData(_ forced: Bool) {
-        topViewController?.loadData(forced)
-    }
-    
-    override func updateUI() {
-        topViewController?.updateUI()
-    }
 }
