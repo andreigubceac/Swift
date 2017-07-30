@@ -34,16 +34,4 @@ extension UIViewController {
         self.dismiss(animated: true , completion: nil)
     }
     
-    
-    func loadData(_ forced : Bool = false) {
-        /*Override me*/
-    }
-    
-    func updateUI() {
-        /*Override me*/
-    }
-}
-
-extension UINavigationController {
-    
 }

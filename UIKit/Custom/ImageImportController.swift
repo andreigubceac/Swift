@@ -24,7 +24,7 @@ class ImageImportController: UIAlertController {
         return imageImport
     }
     
-    func showDeleteButton(title: String, handler: ((UIAlertAction) -> Swift.Void)? = nil) {
+    func showDeleteButton(title: String = NSLocalizedString("Delete", comment: "Delete"), handler: ((UIAlertAction) -> Swift.Void)? = nil) {
         addAction(UIAlertAction(title: NSLocalizedString(title, comment: title), style: .destructive, handler: handler))
     }
 
@@ -35,7 +35,6 @@ class ImageImportController: UIAlertController {
         func presentImagePikcer(source type: UIImagePickerControllerSourceType) {
             let imagePicker = ImagePickerController()
             imagePicker.delegateBlock = delegateBlock
-            imagePicker.allowsEditing = true
             imagePicker.sourceType = type
             imagePicker.delegate = parentVctrl
             parentVctrl.present(imagePicker, animated: true, completion: nil)
