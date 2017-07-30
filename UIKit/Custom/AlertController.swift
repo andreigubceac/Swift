@@ -10,11 +10,11 @@ import UIKit
 extension UIAlertController {
     
     class func alertController(_ title : String?, message : String?) -> UIAlertController {
-        return UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
+        return UIAlertController(title: title, message: message, preferredStyle: .alert)
     }
 
     class func actionSheetController(_ title : String?, message : String?) -> UIAlertController {
-        return UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.actionSheet)
+        return UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
     }
 
 }
@@ -30,7 +30,7 @@ extension UIViewController {
     /*Custom*/
     func presentAlertInfo(_ title : String?, message : String?, animated : Bool? = true, completion : (()->Void)? = nil) -> UIAlertController{
         let alert = self.presentAlertWith(title, message: message, animated: animated, completion: completion)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Ok", comment: "Ok"), style: UIAlertActionStyle.cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Ok", comment: "Ok"), style: .cancel, handler: nil))
         return alert
     }
     
