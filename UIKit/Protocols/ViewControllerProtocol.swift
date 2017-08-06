@@ -9,11 +9,13 @@ import UIKit
 
 typealias ViewControllerProtocolBlock = (_ viewController : UIViewController, _ info : Any?) -> Void
 
-protocol ViewControllerProtocol : class
-{
+@objc protocol ViewControllerProtocol: NSObjectProtocol {
     var info : Any? { get set}
     var delegateBlock : ViewControllerProtocolBlock? { get set}
     
+    @objc optional func delegateAction(info: Any?)
+    @objc optional func updateUI()
+    @objc optional func loadData(forced: Bool)
 }
 
 
@@ -25,7 +27,7 @@ extension UIViewController {
     var storage : AGStorageController {
         return application.storage!
     }
-    
+        
     class func dismissViewControllerSelector() -> Selector {
         return NSSelectorFromString("dismissViewControllerAnimated");
     }
