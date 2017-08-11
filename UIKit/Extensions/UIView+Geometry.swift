@@ -146,3 +146,17 @@ extension UIView {
         return UIGraphicsGetImageFromCurrentImageContext()
     }
 }
+
+extension UIView {
+    func hide(duration: TimeInterval = 0.15, completion: ((Bool) -> Void)? = nil) {
+        UIView.animate(withDuration: duration, animations: {
+            self.alpha = 0.0
+        }, completion: completion)
+    }
+
+    func show(duration: TimeInterval = 0.15, completion: ((Bool) -> Void)? = nil) {
+        UIView.animate(withDuration: duration, animations: {
+            self.alpha = 1.0
+        }, completion: completion)
+    }
+}
