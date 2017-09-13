@@ -44,7 +44,7 @@ class ConsoleViewController: ViewController {
         return view as! UITextView
     }
     
-    func clearAction(_ sender : AnyObject?) {
+    @objc func clearAction(_ sender : AnyObject?) {
         storage.rest.logClear()
         textView.text = nil
     }

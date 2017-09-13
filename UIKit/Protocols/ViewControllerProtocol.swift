@@ -35,11 +35,11 @@ extension UIViewController {
     }
     
     
-    func loadData(_ forced : Bool = false) {
+    @objc func loadData(_ forced : Bool = false) {
         /*Override me*/
     }
     
-    func updateUI() {
+    @objc func updateUI() {
         /*Override me*/
     }
 }
