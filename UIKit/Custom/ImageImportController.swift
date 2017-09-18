@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-typealias ImageDelegateBlock = ((UIImage) -> Swift.Void)
+typealias ImageDelegateBlock = ((UIImage, UIImagePickerControllerSourceType) -> Swift.Void)
 
 class ImagePickerController: UIImagePickerController {
     var delegateBlock: ImageDelegateBlock? = nil
@@ -93,7 +93,7 @@ extension UIViewController: UIImagePickerControllerDelegate, UINavigationControl
         picker.dismiss(animated: true) {
             if let pickerVctrl = picker as? ImagePickerController {
                 if let image = (info[UIImagePickerControllerEditedImage] ?? info[UIImagePickerControllerOriginalImage]) as? UIImage {
-                    pickerVctrl.delegateBlock?(image)
+                    pickerVctrl.delegateBlock?(image, picker.sourceType)
                 }
             }
         }
