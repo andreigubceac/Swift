@@ -9,6 +9,7 @@
 import UIKit
 import AVFoundation
 
+typealias ActionDelegateBlock = ((ImageImportController, UIImagePickerControllerSourceType) -> Swift.Void)
 typealias ImageDelegateBlock = ((UIImage, UIImagePickerControllerSourceType) -> Swift.Void)
 
 class ImagePickerController: UIImagePickerController {
@@ -16,11 +17,13 @@ class ImagePickerController: UIImagePickerController {
 }
 
 class ImageImportController: UIAlertController {
+    var actionBlock: ActionDelegateBlock? = nil
     var delegateBlock: ImageDelegateBlock? = nil
 
-    class func imageImportSheet(_ title : String?, message : String?, completion: ImageDelegateBlock? = nil) -> ImageImportController {
+    class func imageImportSheet(_ title : String?, message : String?, action: ActionDelegateBlock? = nil, completion: ImageDelegateBlock? = nil) -> ImageImportController {
         let imageImport = ImageImportController(title: title, message: message, preferredStyle: .actionSheet)
-        imageImport.delegateBlock = completion
+        imageImport.actionBlock     = action
+        imageImport.delegateBlock   = completion
         return imageImport
     }
     
@@ -32,30 +35,38 @@ class ImageImportController: UIAlertController {
         super.viewDidLoad()
 
         let parentVctrl = presentingViewController ?? UIApplication.shared.keyWindow!.rootViewController!
-        func presentImagePikcer(source type: UIImagePickerControllerSourceType) {
-            let imagePicker = ImagePickerController()
-            imagePicker.delegateBlock = delegateBlock
-            imagePicker.sourceType = type
-            imagePicker.delegate = parentVctrl
-            parentVctrl.present(imagePicker, animated: true, completion: nil)
-        }
         // Do any additional setup after loading the view.
         addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: .cancel, handler: nil))
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
             addAction(UIAlertAction(title: NSLocalizedString("Library", comment: "Library"), style: .default, handler: { (action) in
-                presentImagePikcer(source: .photoLibrary)
+                if self.actionBlock != nil {
+                    self.actionBlock?(self, .photoLibrary)
+                }
+                else {
+                    self.presentImagePikcer(source: .photoLibrary)
+                }
             }))
         }
         if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
             addAction(UIAlertAction(title: NSLocalizedString("Saved Photos", comment: "Saved Photos"), style: .default, handler: { (action) in
-                presentImagePikcer(source: .savedPhotosAlbum)
+                if self.actionBlock != nil {
+                    self.actionBlock?(self, .savedPhotosAlbum)
+                }
+                else {
+                    self.presentImagePikcer(source: .savedPhotosAlbum)
+                }
             }))
         }
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
             addAction(UIAlertAction(title: NSLocalizedString("Take Photo", comment: "Take Photo"), style: .default, handler: { (action) in
                 let status = AVCaptureDevice.authorizationStatus(for: .video)
                 if status == .authorized {
-                    presentImagePikcer(source: .camera)
+                    if self.actionBlock != nil {
+                        self.actionBlock?(self, .camera)
+                    }
+                    else {
+                        self.presentImagePikcer(source: .camera)
+                    }
                 }
                 else if status == .denied {
                     _ = parentVctrl.presentAlertInfo(nil, message: NSLocalizedString("Access Denied from Settings", comment: "Access Denied from Settings"))
@@ -67,7 +78,12 @@ class ImageImportController: UIAlertController {
                     AVCaptureDevice.requestAccess(for: .video, completionHandler: { (granted) in
                         if granted {
                             DispatchQueue.main.async {
-                                presentImagePikcer(source: .camera)
+                                if self.actionBlock != nil {
+                                    self.actionBlock?(self, .camera)
+                                }
+                                else {
+                                    self.presentImagePikcer(source: .camera)
+                                }
                             }
                         }
                         else {
@@ -79,6 +95,15 @@ class ImageImportController: UIAlertController {
                 }
             }))
         }
+    }
+    
+    func presentImagePikcer(source type: UIImagePickerControllerSourceType) {
+        let parentVctrl = presentingViewController ?? UIApplication.shared.keyWindow!.rootViewController!
+        let imagePicker = ImagePickerController()
+        imagePicker.delegateBlock = delegateBlock
+        imagePicker.sourceType = type
+        imagePicker.delegate = parentVctrl
+        parentVctrl.present(imagePicker, animated: true, completion: nil)
     }
 
 }
