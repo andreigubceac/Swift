@@ -13,3 +13,7 @@ class AGAnalytics {
         
     }
 }
+
+protocol AGAnalyticsEventParameters {
+    var eventParameters: Dictionary<String, String> { get }
+}
