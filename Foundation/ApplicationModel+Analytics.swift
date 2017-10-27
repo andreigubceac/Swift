@@ -1,6 +1,6 @@
 //
 //  ApplicationModel+Analytics.swift
-=//
+//
 //  Created by Andrei Gubceac.
 //
 
