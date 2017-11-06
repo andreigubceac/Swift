@@ -37,7 +37,7 @@ class ConsoleViewController: ViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        textView.scrollRangeToVisible(NSMakeRange(textView.text.characters.count-1, 0))
+        textView.scrollRangeToVisible(NSMakeRange(textView.text.count-1, 0))
     }
     
     var textView : UITextView {
@@ -55,6 +55,6 @@ class ConsoleViewController: ViewController {
     
     func syncCalendarDidFinish(_ n : Notification?) {
         textView.text = storage.rest.logString()
-        textView.scrollRangeToVisible(NSMakeRange(textView.text.characters.count-1, 0))
+        textView.scrollRangeToVisible(NSMakeRange(textView.text.count-1, 0))
     }
 }
