@@ -1,9 +1,8 @@
 //
 //  ImageImportController.swift
-//  123DressMe
 //
-//  Created by Andrei Gubceac on 7/30/17.
-//  Copyright © 2017 123DressMe. All rights reserved.
+//  Created by Andrei Gubceac.
+//  Copyright © 2017. All rights reserved.
 //
 
 import UIKit
