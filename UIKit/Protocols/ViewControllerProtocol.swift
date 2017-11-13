@@ -9,11 +9,13 @@ import UIKit
 
 typealias ViewControllerProtocolBlock = (_ viewController : UIViewController, _ info : Any?) -> Void
 
-protocol ViewControllerProtocol : class
-{
+@objc protocol ViewControllerProtocol: NSObjectProtocol {
     var info : Any? { get set}
     var delegateBlock : ViewControllerProtocolBlock? { get set}
     
+    @objc optional func delegateAction(info: Any?)
+    @objc optional func updateUI()
+    @objc optional func loadData(forced: Bool)
 }
 
 
@@ -22,10 +24,10 @@ extension UIViewController {
         return AppDelegate.shared
     }
     
-    var storage : StorageController {
+    var storage : AGStorageController {
         return application.storage!
     }
-    
+        
     class func dismissViewControllerSelector() -> Selector {
         return NSSelectorFromString("dismissViewControllerAnimated");
     }
@@ -34,23 +36,4 @@ extension UIViewController {
         self.dismiss(animated: true , completion: nil)
     }
     
-    
-    @objc func loadData(_ forced : Bool = false) {
-        /*Override me*/
-    }
-    
-    @objc func updateUI() {
-        /*Override me*/
-    }
-}
-
-extension UINavigationController {
-    
-    override func loadData(_ forced: Bool = false) {
-        topViewController?.loadData(forced)
-    }
-    
-    override func updateUI() {
-        topViewController?.updateUI()
-    }
 }
