@@ -42,7 +42,7 @@ class ImageImportController: UIAlertController {
                     self.actionBlock?(self, .photoLibrary)
                 }
                 else {
-                    self.presentImagePikcer(source: .photoLibrary)
+                    self.presentImagePikcer(fromVctrl: parentVctrl, source: .photoLibrary)
                 }
             }))
         }
@@ -52,7 +52,7 @@ class ImageImportController: UIAlertController {
                     self.actionBlock?(self, .savedPhotosAlbum)
                 }
                 else {
-                    self.presentImagePikcer(source: .savedPhotosAlbum)
+                    self.presentImagePikcer(fromVctrl: parentVctrl, source: .savedPhotosAlbum)
                 }
             }))
         }
@@ -64,7 +64,7 @@ class ImageImportController: UIAlertController {
                         self.actionBlock?(self, .camera)
                     }
                     else {
-                        self.presentImagePikcer(source: .camera)
+                        self.presentImagePikcer(fromVctrl: parentVctrl, source: .camera)
                     }
                 }
                 else if status == .denied {
@@ -81,7 +81,7 @@ class ImageImportController: UIAlertController {
                                     self.actionBlock?(self, .camera)
                                 }
                                 else {
-                                    self.presentImagePikcer(source: .camera)
+                                    self.presentImagePikcer(fromVctrl: parentVctrl, source: .camera)
                                 }
                             }
                         }
@@ -96,13 +96,12 @@ class ImageImportController: UIAlertController {
         }
     }
     
-    func presentImagePikcer(source type: UIImagePickerControllerSourceType) {
-        let parentVctrl = presentingViewController ?? UIApplication.shared.keyWindow!.rootViewController!
+    private func presentImagePikcer(fromVctrl: UIViewController, source type: UIImagePickerControllerSourceType) {
         let imagePicker = ImagePickerController()
         imagePicker.delegateBlock = delegateBlock
         imagePicker.sourceType = type
-        imagePicker.delegate = parentVctrl
-        parentVctrl.present(imagePicker, animated: true, completion: nil)
+        imagePicker.delegate = fromVctrl
+        fromVctrl.present(imagePicker, animated: true, completion: nil)
     }
 
 }
