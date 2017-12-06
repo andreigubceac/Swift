@@ -34,7 +34,7 @@ class SlideToPerformButton: UIButton {
         arrowImageView.center.x = titleLabel!.left - arrowImageView.width - 10
     }
     
-    fileprivate func dragInside(_ g : UIPanGestureRecognizer) {
+    @objc private func dragInside(_ g : UIPanGestureRecognizer) {
         if g.state == .began {
         }
         else if g.state == .changed {
