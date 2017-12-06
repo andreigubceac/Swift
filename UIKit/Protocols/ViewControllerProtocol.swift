@@ -14,8 +14,6 @@ typealias ViewControllerProtocolBlock = (_ viewController : UIViewController, _ 
     var delegateBlock : ViewControllerProtocolBlock? { get set}
     
     @objc optional func delegateAction(info: Any?)
-    @objc optional func updateUI()
-    @objc optional func loadData(forced: Bool)
 }
 
 
@@ -36,4 +34,28 @@ extension UIViewController {
         self.dismiss(animated: true , completion: nil)
     }
     
+    @objc func updateUI() {
+        
+    }
+    
+    @objc func loadData(forced: Bool) {
+        
+    }
+
+}
+
+extension UITableViewController {
+    
+    override func updateUI() {
+        super.updateUI()
+        tableView.reloadData()
+    }
+}
+
+extension UICollectionViewController {
+    
+    override func updateUI() {
+        super.updateUI()
+        collectionView?.reloadData()
+    }
 }
