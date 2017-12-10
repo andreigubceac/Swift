@@ -53,15 +53,9 @@ class AGRESTController : SessionManager {
         return urlString
     }
     
-    func requestJSON(method: HTTPMethod = .get,
-                     url: URLConvertible,
-                     parameters: Parameters? = nil,
-                     encoding: ParameterEncoding  = URLEncoding.default,
-                     resultBlock : @escaping RESTResultBlock ) -> Request {
-        
+    func request(_ url: URLConvertible, method: HTTPMethod = .get, parameters: Parameters? = nil, encoding: ParameterEncoding, headers: HTTPHeaders? = nil, resultBlock : @escaping RESTResultBlock ) -> Request {
         appendConcsoleLog("[\(dateFormatter.string(from: Date()))] Start <\(method)> \(url)\n {\(String(describing: parameters))}\n")
         let headers = authorizeRequest()
-        
         return request(url, method: method, parameters: parameters, encoding: encoding, headers: headers).response(queue: backgroundQueue, completionHandler: {(dataResponse) in
             if let statusCode = dataResponse.response?.statusCode, statusCode == 401 {
                 /*Session expired*/
@@ -72,7 +66,7 @@ class AGRESTController : SessionManager {
                         resultBlock(result)
                     }
                     else {
-                        let _ = self.requestJSON(method: method, url: url, parameters: parameters, encoding: encoding, resultBlock: resultBlock)
+                        let _ = self.request(url, method: method, parameters: parameters, encoding: encoding, resultBlock: resultBlock)
                     }
                 })
             }
@@ -87,26 +81,36 @@ class AGRESTController : SessionManager {
                     self.appendConcsoleLog("\(error.localizedDescription)\n==================\n")
                     resultBlock(error)
                 }
-                else {
-                    
-                    guard let validData = dataResponse.data, validData.count > 0 else {
-                        let failureReason = "JSON could not be serialized. Input data was nil or zero length."
-                        let error = NSError(domain: "API", code: (dataResponse.response?.statusCode ?? 500), userInfo: [NSLocalizedDescriptionKey : failureReason])
-                        self.appendConcsoleLog("\(error.localizedDescription)\n==================\n")
-                        
-                        resultBlock(error)
-                        return
-                    }
-                    
-                    do {
-                        let JSON = try JSONSerialization.jsonObject(with: validData, options: .allowFragments)
-                        self.appendConcsoleLog("\(JSON)\n==================\n")
-                        resultBlock(JSON)
-                    } catch let error as NSError {
-                        self.appendConcsoleLog("Error = \(error.localizedDescription)\nText\(String(describing: String(data: validData, encoding: .utf8))))\n==================\n")
-                        resultBlock(error)
-                    }
+                else if let data = dataResponse.data {
+                    resultBlock(data)
                 }
+                else {
+                    resultBlock(dataResponse)
+                }
+            }
+        })
+    }
+    
+    func requestJSON(method: HTTPMethod = .get,
+                     url: URLConvertible,
+                     parameters: Parameters? = nil,
+                     encoding: ParameterEncoding  = URLEncoding.default,
+                     resultBlock : @escaping RESTResultBlock ) -> Request {
+        return request(url, method: method, parameters: parameters, encoding: encoding, resultBlock: { (result) in
+            guard let validData = result as? Data, validData.count > 0 else {
+                let failureReason = "JSON could not be serialized. Input data was nil or zero length."
+                let error = NSError(domain: "API", code: 500, userInfo: [NSLocalizedDescriptionKey : failureReason])
+                self.appendConcsoleLog("\(error.localizedDescription)\n==================\n")
+                resultBlock(error)
+                return
+            }
+            do {
+                let JSON = try JSONSerialization.jsonObject(with: validData, options: .allowFragments)
+                self.appendConcsoleLog("\(JSON)\n==================\n")
+                resultBlock(JSON)
+            } catch let error as NSError {
+                self.appendConcsoleLog("Error = \(error.localizedDescription)\nText\(String(describing: String(data: validData, encoding: .utf8))))\n==================\n")
+                resultBlock(error)
             }
         })
     }
