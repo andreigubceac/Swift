@@ -82,6 +82,12 @@ class AGRESTController : SessionManager {
                     resultBlock(error)
                 }
                 else if let data = dataResponse.data {
+                    #if (arch(i386) || arch(x86_64)) && os(iOS)
+                        debugPrint(url)
+                        if let string = String(data: data, encoding: .utf8) {
+                            debugPrint(string)
+                        }
+                    #endif
                     resultBlock(data)
                 }
                 else {
