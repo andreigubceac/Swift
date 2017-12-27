@@ -96,7 +96,7 @@ class ImageImportController: UIAlertController {
         }
     }
     
-    private func presentImagePikcer(fromVctrl: UIViewController, source type: UIImagePickerControllerSourceType) {
+    public func presentImagePikcer(fromVctrl: UIViewController, source type: UIImagePickerControllerSourceType) {
         let imagePicker = ImagePickerController()
         imagePicker.delegateBlock = delegateBlock
         imagePicker.sourceType = type
