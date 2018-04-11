@@ -30,8 +30,8 @@ extension UIViewController {
         return NSSelectorFromString("dismissViewControllerAnimated");
     }
     
-    @objc func dismissViewControllerAnimated() {
-        self.dismiss(animated: true , completion: nil)
+    @IBAction func dismissViewControllerAnimated() {
+        dismiss(animated: true , completion: nil)
     }
     
     @objc func updateUI() {
