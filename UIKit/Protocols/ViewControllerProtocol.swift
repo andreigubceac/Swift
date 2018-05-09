@@ -38,7 +38,7 @@ extension UIViewController {
         
     }
     
-    @objc func loadData(forced: Bool) {
+    @objc func loadData(forced: Bool = false) {
         
     }
 
