@@ -103,6 +103,10 @@ class AGRESTController : SessionManager {
                      encoding: ParameterEncoding  = URLEncoding.default,
                      resultBlock : @escaping RESTResultBlock ) -> Request {
         return request(url, method: method, parameters: parameters, encoding: encoding, resultBlock: { (result) in
+            if let error = result as? Error  {
+                resultBlock(error)
+                return;
+            }
             guard let validData = result as? Data, validData.count > 0 else {
                 let failureReason = "JSON could not be serialized. Input data was nil or zero length."
                 let error = NSError(domain: "API", code: 500, userInfo: [NSLocalizedDescriptionKey : failureReason])
