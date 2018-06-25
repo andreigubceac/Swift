@@ -85,17 +85,19 @@ class AGStorageController {
     
     /*API*/
     func processAPIResponse(_ result: Any?, completion: @escaping StoreResultBlock) {
-        if result is Dictionary<AnyHashable,Any> || result is Array<Any> {
-            completion(result, false)
-        }
-        else {
-            if let error = result as? NSError {
-                completion(error, false)
+        self.runBackgroundTask({ () -> Any? in
+            if result is Dictionary<AnyHashable,Any> || result is Array<Any> {
+                return completion(result, false)
             }
             else {
-                completion(NSError(domain: AGStorageController.bundleIdentifier, code: 500, userInfo: [NSLocalizedDescriptionKey : "An unexpected error occured"]), false)
+                if let error = result as? NSError {
+                    return completion(error, false)
+                }
+                else {
+                    return completion(NSError(domain: AGStorageController.bundleIdentifier, code: 500, userInfo: [NSLocalizedDescriptionKey : "An unexpected error occured"]), false)
+                }
             }
-        }
+        })
    }
 
 }
