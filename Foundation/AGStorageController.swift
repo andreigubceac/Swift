@@ -13,8 +13,6 @@ typealias StoreProgressBlock = (_ message: String) -> Void
 class AGStorageController {
     static let bundleIdentifier = Bundle.main.infoDictionary!["CFBundleIdentifier"] as! String
 
-    fileprivate let operationQueue = OperationQueue()
-
     static var applicationCacheDirectory : URL = {
         var _cacheUrl = FileManager.default.urls(for: FileManager.SearchPathDirectory.cachesDirectory, in: FileManager.SearchPathDomainMask.userDomainMask).last
         _cacheUrl = _cacheUrl?.appendingPathComponent(AGStorageController.bundleIdentifier)
@@ -23,7 +21,6 @@ class AGStorageController {
     
     deinit {
         /*Stop All connections*/
-        operationQueue.cancelAllOperations()
     }
     
     init() {
@@ -38,16 +35,16 @@ class AGStorageController {
     }
     
     func runBackgroundTask(_ block: @escaping ()->Any?, completion: ((_ result : Any?) -> Void)? = nil ) {
-        operationQueue.addOperation { () -> Void in
+        DispatchQueue.global(qos: .userInitiated).async {
             let result = block()
-            OperationQueue.main.addOperation({ () -> Void in
+            DispatchQueue.main.async {
                 completion?(result)
-            })
+            }
         }
     }
     
     func runMainThreadTask(_ block: @escaping () -> Void) {
-        OperationQueue.main.addOperation(block);
+        DispatchQueue.main.async(execute: block)
     }
     
     /*Storage*/
@@ -85,7 +82,7 @@ class AGStorageController {
     
     /*API*/
     func processAPIResponse(_ result: Any?, completion: @escaping StoreResultBlock) {
-        self.runBackgroundTask({ () -> Any? in
+        runBackgroundTask({ () -> Any? in
             if result is Dictionary<AnyHashable,Any> || result is Array<Any> {
                 return completion(result, false)
             }
