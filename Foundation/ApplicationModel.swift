@@ -15,7 +15,7 @@ import Foundation
     @objc optional var date : Date? { get set }
 }
 
-open class ApplicationModel : ApplicationModelProtocol {
+open class ApplicationModel : ApplicationModelProtocol, CustomStringConvertible {
     internal var _dictionary : Dictionary<AnyHashable, Any>!
     
     public class func identifierKey() -> String {
@@ -65,9 +65,6 @@ open class ApplicationModel : ApplicationModelProtocol {
             _dictionary[key] = newValue
         }
     }
-}
-
-extension ApplicationModel : CustomStringConvertible {
     
     public var description: String {
         return _dictionary.description
