@@ -21,7 +21,7 @@ class ConsoleViewController: ViewController {
         // Do any additional setup after loading the view.
         title = "Console"
         textView.text = storage.internSelf.rest.logString()
-        let clearItem = UIBarButtonItem(title: "Clear", style: UIBarButtonItemStyle.plain, target: self, action: #selector(clearAction(_:)))
+        let clearItem = UIBarButtonItem(title: "Clear", style: UIBarButtonItem.Style.plain, target: self, action: #selector(clearAction(_:)))
         if let count = navigationController?.viewControllers.count, count > 1 {
             navigationItem.rightBarButtonItem = clearItem
         }

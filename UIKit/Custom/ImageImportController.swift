@@ -8,8 +8,8 @@
 import UIKit
 import AVFoundation
 
-typealias ActionDelegateBlock = ((ImageImportController, UIImagePickerControllerSourceType) -> Swift.Void)
-typealias ImageDelegateBlock = ((UIImage, UIImagePickerControllerSourceType) -> Swift.Void)
+typealias ActionDelegateBlock = ((ImageImportController, UIImagePickerController.SourceType) -> Swift.Void)
+typealias ImageDelegateBlock = ((UIImage, UIImagePickerController.SourceType) -> Swift.Void)
 
 class ImagePickerController: UIImagePickerController {
     var delegateBlock: ImageDelegateBlock? = nil
@@ -96,7 +96,7 @@ class ImageImportController: UIAlertController {
         }
     }
     
-    public func presentImagePikcer(fromVctrl: UIViewController, source type: UIImagePickerControllerSourceType) {
+    public func presentImagePikcer(fromVctrl: UIViewController, source type: UIImagePickerController.SourceType) {
         let imagePicker = ImagePickerController()
         imagePicker.delegateBlock = delegateBlock
         imagePicker.sourceType = type
@@ -112,14 +112,27 @@ extension UIViewController: UIImagePickerControllerDelegate, UINavigationControl
         picker.dismiss(animated: true, completion: nil)
     }
     
-    public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+// Local variable inserted by Swift 4.2 migrator.
+let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
         picker.dismiss(animated: true) {
             if let pickerVctrl = picker as? ImagePickerController {
-                if let image = (info[UIImagePickerControllerEditedImage] ?? info[UIImagePickerControllerOriginalImage]) as? UIImage {
+                if let image = (info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.editedImage)] ?? info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)]) as? UIImage {
                     pickerVctrl.delegateBlock?(image, picker.sourceType)
                 }
             }
         }
     }
     
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+	return input.rawValue
 }
