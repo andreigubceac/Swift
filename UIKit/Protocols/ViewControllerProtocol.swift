@@ -16,6 +16,13 @@ typealias ViewControllerProtocolBlock = (_ viewController : UIViewController, _ 
     @objc optional func delegateAction(info: Any?)
 }
 
+extension UIViewController {
+    
+    @objc class func storyBoard() -> UIViewController {
+        let sboard = UIStoryboard(name: String(describing: self), bundle: nil)
+        return sboard.instantiateInitialViewController() ?? sboard.instantiateViewController(withIdentifier: String(describing: self))
+    }
+}
 
 extension UIViewController {
     var application : AppDelegate {
