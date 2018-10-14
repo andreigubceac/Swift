@@ -56,6 +56,11 @@ class AGRESTController : SessionManager {
     func request(_ url: URLConvertible, method: HTTPMethod = .get, parameters: Parameters? = nil, encoding: ParameterEncoding, headers: HTTPHeaders? = nil, resultBlock : @escaping RESTResultBlock ) -> Request {
         appendConcsoleLog("[\(dateFormatter.string(from: Date()))] Start <\(method)> \(url)\n {\(String(describing: parameters))}\n")
         let headers = authorizeRequest()
+        #if targetEnvironment(simulator)
+        debugPrint(method.rawValue + ": " + (try! url.asURL().absoluteString))
+        debugPrint("Params: " + (parameters?.description ?? ""))
+        #endif
+
         return request(url, method: method, parameters: parameters, encoding: encoding, headers: headers).response(queue: backgroundQueue, completionHandler: {(dataResponse) in
             if let statusCode = dataResponse.response?.statusCode, statusCode == 401 {
                 /*Session expired*/
