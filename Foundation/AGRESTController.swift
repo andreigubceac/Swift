@@ -84,9 +84,13 @@ class AGRESTController : SessionManager {
                 else if let data = dataResponse.data {
                     #if targetEnvironment(simulator)
                         debugPrint(url)
-                        if let string = String(data: data, encoding: .utf8) {
-                            debugPrint(string)
-                        }
+                    do {
+                        let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                        debugPrint(json)
+                    }
+                    catch {
+                        debugPrint(error)
+                    }
                     #endif
                     resultBlock(data)
                 }

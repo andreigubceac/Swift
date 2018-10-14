@@ -15,6 +15,17 @@ import Foundation
     @objc optional var date : Date? { get set }
 }
 
+extension Encodable {
+    var dictionary: [AnyHashable: Any] {
+        do {
+            if let dict = try? JSONSerialization.jsonObject(with: JSONEncoder().encode(self), options: .allowFragments) as? [AnyHashable: Any] {
+                return dict ?? [:]
+            }
+            return [:]
+        }
+    }
+}
+
 open class ApplicationModel : ApplicationModelProtocol, CustomStringConvertible {
     internal var _dictionary : Dictionary<AnyHashable, Any>!
     
