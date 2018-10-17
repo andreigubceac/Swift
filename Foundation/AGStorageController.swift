@@ -86,6 +86,9 @@ class AGStorageController {
             if result is Dictionary<AnyHashable,Any> || result is Array<Any> {
                 return completion(result, false)
             }
+            else if result is Data {
+                return completion(result, false)
+            }
             else {
                 if let error = result as? NSError {
                     return completion(error, false)
