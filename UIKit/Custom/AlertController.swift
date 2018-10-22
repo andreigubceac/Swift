@@ -30,7 +30,7 @@ extension UIViewController {
     /*Custom*/
     func presentAlertInfo(_ title : String?, message : String?, animated : Bool? = true, completion : (()->Void)? = nil) -> UIAlertController{
         let alert = self.presentAlertWith(title, message: message, animated: animated, completion: completion)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Ok", comment: "Ok"), style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Dismiss", comment: "Dismiss"), style: .cancel, handler: nil))
         return alert
     }
     
