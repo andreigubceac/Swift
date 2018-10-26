@@ -29,7 +29,7 @@ class AGRESTController : SessionManager {
         _logString.removeAll()
     }
     
-    fileprivate func appendConcsoleLog(_ text : String) {
+    func appendConcsoleLog(_ text : String) {
         if logEnable {
             _logString.append(text)
         }
@@ -41,6 +41,7 @@ class AGRESTController : SessionManager {
         super.init(configuration: configuration, delegate: SessionDelegate(), serverTrustPolicyManager: serverTrustPolicyManager)
         dateFormatter.dateFormat   = "yyyy-MM-dd HH:mm"
         dateFormatter.timeZone     = TimeZone(identifier : "UTC")
+        
     }
     
     convenience init(baseUrl : String) {
