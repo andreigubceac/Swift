@@ -17,7 +17,9 @@ class AGRESTController : SessionManager {
     var baseUrl : String!
     var token   : String?
 
-    let dateFormatter   = DateFormatter()
+    var dateFormatter: DateFormatter {
+        return DateFormatter.sharedFormatter()
+    }
     
     /*Developer*/
     var logEnable   = false
@@ -39,9 +41,6 @@ class AGRESTController : SessionManager {
         let configuration = URLSessionConfiguration.default
         configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
         super.init(configuration: configuration, delegate: SessionDelegate(), serverTrustPolicyManager: serverTrustPolicyManager)
-        dateFormatter.dateFormat   = "yyyy-MM-dd HH:mm"
-        dateFormatter.timeZone     = TimeZone(identifier : "UTC")
-        
     }
     
     convenience init(baseUrl : String) {

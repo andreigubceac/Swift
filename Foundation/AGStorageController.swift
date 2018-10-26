@@ -35,12 +35,12 @@ class AGStorageController {
     }
     
     func runBackgroundTask(_ block: @escaping ()->Any?, completion: ((_ result : Any?) -> Void)? = nil ) {
-//        DispatchQueue.global(qos: .userInitiated).async {[weak self] in
+        DispatchQueue.global(qos: .userInitiated).async {
             let result = block()
-            runMainThreadTask {
+            DispatchQueue.main.async {
                 completion?(result)
             }
-//        }
+        }
     }
     
     func runMainThreadTask(_ block: @escaping () -> Void) {
