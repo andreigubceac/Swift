@@ -9,14 +9,16 @@ import Foundation
 
 extension DateFormatter {
     
-    public class func sharedFormatter(with format: String? = "yyyy-MM-dd HH:mm", timeZone: TimeZone? = TimeZone(identifier : "UTC")) -> DateFormatter {
+    public class func sharedFormatter(with format: String? = "yyyy-MM-dd HH:mm", timeZone: TimeZone? = TimeZone(secondsFromGMT: 0)) -> DateFormatter {
         let indentifier = Thread.current.hash
         if let formatter = Thread.current.threadDictionary[indentifier] as? DateFormatter{
             return formatter
         }else{
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat   = format
-            dateFormatter.timeZone     = timeZone
+            let dateFormatter           = DateFormatter()
+            dateFormatter.dateFormat    = format
+            dateFormatter.timeZone      = timeZone
+            dateFormatter.locale        = Locale.autoupdatingCurrent
+            dateFormatter.calendar      = Calendar.autoupdatingCurrent
             Thread.current.threadDictionary[indentifier] = dateFormatter
             return dateFormatter
         }
