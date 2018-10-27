@@ -15,10 +15,9 @@ extension DateFormatter {
             return formatter
         }else{
             let dateFormatter           = DateFormatter()
+            dateFormatter.locale        = locale
             dateFormatter.dateFormat    = format
             dateFormatter.timeZone      = timeZone
-            dateFormatter.locale        = locale
-            dateFormatter.calendar      = Calendar.autoupdatingCurrent
             Thread.current.threadDictionary[indentifier] = dateFormatter
             return dateFormatter
         }
