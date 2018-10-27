@@ -9,7 +9,7 @@ import Foundation
 
 extension DateFormatter {
     
-    public class func sharedFormatter(with format: String? = "yyyy-MM-dd HH:mm", timeZone: TimeZone? = TimeZone(secondsFromGMT: 0)) -> DateFormatter {
+    public class func sharedFormatter(with format: String? = "yyyy-MM-dd HH:mm", timeZone: TimeZone? = TimeZone(secondsFromGMT: 0), locale: Locale? = Locale(identifier: "en_US_POSIX")) -> DateFormatter {
         let indentifier = Thread.current.hash
         if let formatter = Thread.current.threadDictionary[indentifier] as? DateFormatter{
             return formatter
@@ -17,7 +17,7 @@ extension DateFormatter {
             let dateFormatter           = DateFormatter()
             dateFormatter.dateFormat    = format
             dateFormatter.timeZone      = timeZone
-            dateFormatter.locale        = Locale.autoupdatingCurrent
+            dateFormatter.locale        = locale
             dateFormatter.calendar      = Calendar.autoupdatingCurrent
             Thread.current.threadDictionary[indentifier] = dateFormatter
             return dateFormatter
