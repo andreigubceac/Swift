@@ -57,8 +57,8 @@ class ConsoleViewController: ViewController {
     
     @objc private func shareAction(_ sender: UIBarButtonItem) {
         let mailComposer = MFMailComposeViewController()
-        mailComposer.mailComposeDelegate = self
-        mailComposer.setToRecipients(["andrei.gubceac@omnisourcetech.com"])
+//        mailComposer.mailComposeDelegate = self
+//        mailComposer.setToRecipients(["andrei.gubceac@omnisourcetech.com"])
         mailComposer.setSubject("Log")
         mailComposer.setMessageBody(storage.internSelf.rest.logString(), isHTML: false)
         present(mailComposer, animated: true, completion: nil)
