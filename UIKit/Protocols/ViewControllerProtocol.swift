@@ -19,9 +19,9 @@ typealias ViewControllerProtocolBlock = (_ viewController : UIViewController, _ 
 
 extension UIViewController {
     
-    @objc class func storyBoard() -> UIViewController {
-        let sboard = UIStoryboard(name: String(describing: self), bundle: nil)
-        return sboard.instantiateInitialViewController() ?? sboard.instantiateViewController(withIdentifier: String(describing: self))
+  @objc class func storyBoard(name: String = "") -> UIViewController {
+    let sboard = UIStoryboard(name: (name.count > 0 ? name : String(describing: self)), bundle: nil)
+    return sboard.instantiateInitialViewController() ?? sboard.instantiateViewController(withIdentifier: String(describing: self))
     }
 }
 
