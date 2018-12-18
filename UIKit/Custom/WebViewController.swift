@@ -22,7 +22,7 @@ class WebViewController: UIViewController {
         }
     }
     
-    init(url : URL) {
+    init(url : URL? = nil) {
         super.init(nibName: nil, bundle: nil)
         defer {
             self.url = url
