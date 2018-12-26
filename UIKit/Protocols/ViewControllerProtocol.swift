@@ -67,19 +67,3 @@ extension UICollectionViewController {
         collectionView?.reloadData()
     }
 }
-
-
-private var TransitioningControllerKey = "transitioningController"
-extension UIViewController {
-
-    var transitioningController: UIViewControllerTransitioningDelegate? {
-        set {
-            objc_setAssociatedObject(self, &TransitioningControllerKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            modalPresentationStyle = .custom
-            transitioningDelegate = transitioningController
-        }
-        get {
-            return objc_getAssociatedObject(self, &TransitioningControllerKey) as? UIViewControllerTransitioningDelegate
-        }
-    }
-}
