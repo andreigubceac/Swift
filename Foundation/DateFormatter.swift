@@ -12,7 +12,10 @@ extension DateFormatter {
     public class func sharedFormatter(with format: String? = "yyyy-MM-dd HH:mm", timeZone: TimeZone? = TimeZone.autoupdatingCurrent, locale: Locale? = Locale(identifier: "en_US_POSIX")) -> DateFormatter {
         let indentifier = Thread.current.hash
         if let formatter = Thread.current.threadDictionary[indentifier] as? DateFormatter{
-            return formatter
+          formatter.locale        = locale
+          formatter.dateFormat    = format
+          formatter.timeZone      = timeZone
+          return formatter
         }else{
             let dateFormatter           = DateFormatter()
             dateFormatter.locale        = locale
