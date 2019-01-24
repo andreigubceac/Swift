@@ -35,7 +35,7 @@ class AGStorageController {
     }
     
     func runBackgroundTask(_ block: @escaping ()->Any?, completion: ((_ result : Any?) -> Void)? = nil ) {
-        DispatchQueue.global(qos: .userInitiated).async {
+        DispatchQueue.global(qos: .background).sync {
             let result = block()
             DispatchQueue.main.async {
                 completion?(result)
