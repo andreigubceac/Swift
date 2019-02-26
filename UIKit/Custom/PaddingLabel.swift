@@ -24,7 +24,16 @@ class PaddingLabel: UILabel {
         get { return inset.top }
         set { inset.top = newValue }
     }
-
+  
+  init(frame: CGRect = .zero, inset: UIEdgeInsets = .zero) {
+    super.init(frame: frame)
+    self.inset = inset
+  }
+  
+  required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
     override func drawText(in rect: CGRect) {
         super.drawText(in: rect.inset(by: inset))
     }
