@@ -9,6 +9,7 @@ import UIKit
 import MessageUI
 
 class ConsoleViewController: ViewController {
+    var toRecipients: [String]?
     
     override func loadView() {
         let textView = UITextView();
@@ -57,9 +58,11 @@ class ConsoleViewController: ViewController {
     
     @objc private func shareAction(_ sender: UIBarButtonItem) {
         let mailComposer = MFMailComposeViewController()
-//        mailComposer.mailComposeDelegate = self
-//        mailComposer.setToRecipients(["andrei.gubceac@omnisourcetech.com"])
-        mailComposer.setSubject("Log")
+        mailComposer.mailComposeDelegate = self
+        if let toRecipients = toRecipients {
+            mailComposer.setToRecipients(toRecipients)
+        }
+        mailComposer.setSubject("Log - \(Date())")
         mailComposer.setMessageBody(storage.internSelf.rest.logString(), isHTML: false)
         present(mailComposer, animated: true, completion: nil)
     }
