@@ -19,7 +19,7 @@ extension Encodable {
     var dictionary: [AnyHashable: Any] {
         do {
             if let dict = try? JSONSerialization.jsonObject(with: JSONEncoder().encode(self), options: .allowFragments) as? [AnyHashable: Any] {
-                return dict ?? [:]
+              return dict 
             }
             return [:]
         }
