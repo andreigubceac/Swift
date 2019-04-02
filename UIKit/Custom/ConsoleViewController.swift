@@ -76,3 +76,10 @@ class ConsoleViewController: ViewController {
         textView.scrollRangeToVisible(NSMakeRange(textView.text.count-1, 0))
     }
 }
+
+extension ConsoleViewController: MFMailComposeViewControllerDelegate {
+  
+  func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+    controller.dismiss(animated: true, completion: nil)
+  }
+}
