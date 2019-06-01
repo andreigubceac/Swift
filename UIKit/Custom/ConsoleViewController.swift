@@ -8,7 +8,7 @@
 import UIKit
 import MessageUI
 
-class ConsoleViewController: ViewController {
+class ConsoleViewController: UIViewController {
     var toRecipients: [String]?
     
     override func loadView() {
@@ -77,9 +77,24 @@ class ConsoleViewController: ViewController {
     }
 }
 
-extension ConsoleViewController: MFMailComposeViewControllerDelegate {
-  
-  func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-    controller.dismiss(animated: true, completion: nil)
-  }
+extension UIViewController : MFMailComposeViewControllerDelegate {
+    
+    public func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true) {
+            if let error = error{
+                debugPrint(error)
+            }
+        }
+    }
+}
+
+extension UIViewController : MFMessageComposeViewControllerDelegate {
+    
+    public func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+        controller.dismiss(animated: true) {
+            if result == .failed {
+                debugPrint(result)
+            }
+        }
+    }
 }
