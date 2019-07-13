@@ -7,10 +7,11 @@
 
 import Alamofire
 
-typealias RESTResultBlock = (_ result : Any) -> Void
+
 
 class AGRESTController : SessionManager {
     fileprivate var backgroundQueue = DispatchQueue(label: "BackgroundQueue", qos : DispatchQoS(qosClass: DispatchQoS.QoSClass.background, relativePriority: 0))
+    typealias RESTResultBlock = (_ result: Swift.Result<Any?, Error>) -> Void
 
     /*Auth*/
     fileprivate var username, password: String?
@@ -73,12 +74,12 @@ class AGRESTController : SessionManager {
                 self.appendConcsoleLog("End Session Invalid 401\n==================\n")
                 /*Call userSignIn method*/
                 self.autosignInRequest(request: dataResponse.request!, completion: { (result) in
-                    if result is NSError {
-                        resultBlock(result)
-                    }
-                    else {
-                        let _ = self.request(url, method: method, parameters: parameters, encoding: encoding, resultBlock: resultBlock)
-                    }
+                  switch result {
+                  case .failure(let error):
+                    resultBlock(Swift.Result.failure(error))
+                  case .success(_):
+                    let _ = self.request(url, method: method, parameters: parameters, encoding: encoding, resultBlock: resultBlock)
+                  }
                 })
             }
             else {
@@ -90,7 +91,7 @@ class AGRESTController : SessionManager {
                 }
                 if let error = dataResponse.error {
                     self.appendConcsoleLog("\(error.localizedDescription)\n==================\n")
-                    resultBlock(error)
+                    resultBlock(Swift.Result.failure(error))
                 }
                 else if let data = dataResponse.data {
                     #if targetEnvironment(simulator)
@@ -103,10 +104,10 @@ class AGRESTController : SessionManager {
                         debugPrint(error)
                     }
                     #endif
-                    resultBlock(data)
+                    resultBlock(Swift.Result.success(data))
                 }
                 else {
-                    resultBlock(dataResponse)
+                    resultBlock(Swift.Result.success(dataResponse))
                 }
             }
         })
@@ -118,25 +119,25 @@ class AGRESTController : SessionManager {
                      encoding: ParameterEncoding  = URLEncoding.default,
                      resultBlock : @escaping RESTResultBlock ) -> Request {
         return request(url, method: method, parameters: parameters, encoding: encoding, resultBlock: { (result) in
-            if let error = result as? Error  {
-                resultBlock(error)
-                return;
-            }
+          switch result {
+          case .failure(let error):
+            resultBlock(Swift.Result.failure(error))
+          case .success(let result):
             guard let validData = result as? Data, validData.count > 0 else {
                 let failureReason = "JSON could not be serialized. Input data was nil or zero length."
                 let error = NSError(domain: "API", code: 500, userInfo: [NSLocalizedDescriptionKey : failureReason])
                 self.appendConcsoleLog("\(error.localizedDescription)\n==================\n")
-                resultBlock(error)
-                return
+                return resultBlock(Swift.Result.failure(error))
             }
             do {
                 let JSON = try JSONSerialization.jsonObject(with: validData, options: .allowFragments)
                 self.appendConcsoleLog("\(JSON)\n==================\n")
-                resultBlock(JSON)
+                resultBlock(Swift.Result.success(JSON))
             } catch let error as NSError {
                 self.appendConcsoleLog("Error = \(error.localizedDescription)\nText\(String(describing: String(data: validData, encoding: .utf8))))\n==================\n")
-                resultBlock(error)
+                resultBlock(Swift.Result.failure(error))
             }
+          }
         })
     }
     

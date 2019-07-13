@@ -7,13 +7,14 @@
 
 import Foundation
 
-typealias StoreResultBlock = (_ result: Any?, _ fromLocal: Bool) -> Void
-typealias StoreProgressBlock = (_ message: String) -> Void
 
 class AGStorageController {
-    static let bundleIdentifier = Bundle.main.infoDictionary!["CFBundleIdentifier"] as! String
+  static let bundleIdentifier = Bundle.main.infoDictionary!["CFBundleIdentifier"] as! String
+  
+  typealias StoreResultBlock = (_ result: Swift.Result<Any?, Error>, _ fromLocal: Bool) -> Void
+  typealias StoreProgressBlock = (_ message: String) -> Void
 
-    static var applicationCacheDirectory : URL = {
+  static var applicationCacheDirectory : URL = {
         var _cacheUrl = FileManager.default.urls(for: FileManager.SearchPathDirectory.cachesDirectory, in: FileManager.SearchPathDomainMask.userDomainMask).last
         _cacheUrl = _cacheUrl?.appendingPathComponent(AGStorageController.bundleIdentifier)
         return _cacheUrl!
@@ -81,22 +82,24 @@ class AGStorageController {
     }
     
     /*API*/
-    func processAPIResponse(_ result: Any?, completion: @escaping StoreResultBlock) {
+    func processAPIResponse(_ result: Swift.Result<Any?,Error>, completion: @escaping StoreResultBlock) {
         runBackgroundTask({ () -> Any? in
+          switch result {
+          case .success(let result):
             if result is Dictionary<AnyHashable,Any> || result is Array<Any> {
-                return completion(result, false)
+              return completion(Result.success(result), false)
             }
             else if result is Data {
-                return completion(result, false)
+              return completion(Result.success(result), false)
             }
             else {
-                if let error = result as? NSError {
-                    return completion(error, false)
-                }
-                else {
-                    return completion(NSError(domain: AGStorageController.bundleIdentifier, code: 500, userInfo: [NSLocalizedDescriptionKey : "An unexpected error occured"]), false)
-                }
+              return completion(Result.failure(NSError(domain: AGStorageController.bundleIdentifier,
+                                                       code: 500,
+                                                       userInfo: [NSLocalizedDescriptionKey : "An unexpected error occured"])), false)
             }
+          case .failure(let error):
+            return completion(Result.failure(error), false)
+          }
         })
    }
 
