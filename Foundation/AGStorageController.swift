@@ -11,7 +11,7 @@ import Foundation
 class AGStorageController {
   static let bundleIdentifier = Bundle.main.infoDictionary!["CFBundleIdentifier"] as! String
   
-  typealias StoreResultBlock<T> = (_ result: Swift.Result<T?, Error>, _ fromLocal: Bool) -> Void
+  typealias StoreResultBlock<T> = (_ result: Swift.Result<T, Error>, _ fromLocal: Bool) -> Void
   typealias StoreProgressBlock = (_ message: String) -> Void
 
   static var applicationCacheDirectory : URL = {
@@ -82,7 +82,7 @@ class AGStorageController {
     }
     
     /*API*/
-    func processAPIResponse<T>(_ result: Swift.Result<T?,Error>, completion: @escaping StoreResultBlock<T>) {
+    func processAPIResponse<T>(_ result: Swift.Result<T,Error>, completion: @escaping StoreResultBlock<T>) {
         runBackgroundTask({ () -> Any? in
           switch result {
           case .success(let result):
