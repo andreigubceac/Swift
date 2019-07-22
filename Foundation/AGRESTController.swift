@@ -53,7 +53,7 @@ class AGRESTController : SessionManager {
         let urlString   = baseUrl + methodString
         return urlString
     }
-    
+    @discardableResult
     func request(_ url: URLConvertible, method: HTTPMethod = .get, parameters: Parameters? = nil, encoding: ParameterEncoding, headers: HTTPHeaders? = nil, resultBlock : @escaping RESTResultBlock ) -> Request {
         appendConcsoleLog("[\(dateFormatter.string(from: Date()))] Start <\(method)> \(url)\n {\(String(describing: parameters))}\n")
         var _headers = authorizeRequest()
@@ -112,7 +112,7 @@ class AGRESTController : SessionManager {
             }
         })
     }
-    
+    @discardableResult
     func requestJSON(method: HTTPMethod = .get,
                      url: URLConvertible,
                      parameters: Parameters? = nil,
