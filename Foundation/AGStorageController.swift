@@ -10,7 +10,7 @@ import Foundation
 
 class AGStorageController {
   static let bundleIdentifier = Bundle.main.infoDictionary!["CFBundleIdentifier"] as! String
-  
+  private let backgroundQueue = DispatchQueue(label: AGStorageController.bundleIdentifier + "Queue", qos: .background, attributes: .concurrent, autoreleaseFrequency: .workItem, target: nil)
   typealias StoreResultBlock<T> = (_ result: Swift.Result<T, Error>, _ fromLocal: Bool) -> Void
   typealias StoreProgressBlock = (_ message: String) -> Void
 
@@ -36,7 +36,7 @@ class AGStorageController {
     }
     
     func runBackgroundTask(_ block: @escaping ()->Any?, completion: ((_ result : Any?) -> Void)? = nil ) {
-        DispatchQueue.global(qos: .background).async {
+        backgroundQueue.sync {
             let result = block()
             DispatchQueue.main.async {
                 completion?(result)
