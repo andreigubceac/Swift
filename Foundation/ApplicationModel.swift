@@ -27,7 +27,7 @@ extension Encodable {
 }
 
 open class ApplicationModel : ApplicationModelProtocol, CustomStringConvertible {
-    internal var _dictionary : Dictionary<AnyHashable, Any>!
+    internal var _dictionary : Dictionary<AnyHashable, Any>?
     
     public class func identifierKey() -> String {
         return "Id"
@@ -51,12 +51,12 @@ open class ApplicationModel : ApplicationModelProtocol, CustomStringConvertible 
     
     public func update(_ dictionary : Dictionary<AnyHashable, Any>) {
         for (key, value) in dictionary {
-            _dictionary.updateValue(value, forKey: key)
+            _dictionary?.updateValue(value, forKey: key)
         }
     }
     
     @objc public func toDictionary() -> Dictionary<AnyHashable,Any> {
-        return _dictionary!
+        return _dictionary ?? [:]
     }
     
     /*ApplicationModelProtocol*/
@@ -70,15 +70,15 @@ open class ApplicationModel : ApplicationModelProtocol, CustomStringConvertible 
 
     public subscript(key : AnyHashable) -> Any? {
         get {
-            return _dictionary[key]
+            return _dictionary?[key]
         }
         set {
-            _dictionary[key] = newValue
+            _dictionary?[key] = newValue
         }
     }
     
     public var description: String {
-        return _dictionary.description
+        return _dictionary?.description ?? ""
     }
 
 }
