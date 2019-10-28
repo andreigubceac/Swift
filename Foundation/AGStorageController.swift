@@ -49,10 +49,6 @@ class AGStorageController {
     }
     
     /*Storage*/
-    /*Override this*/
-    func canDisplayHomeViewController() -> Bool {
-        return true
-    }
     
     /*Write*/
     func writeJSONResponse(_ response: Any, toDisk identifier: String, atURL url: URL = AGStorageController.applicationCacheDirectory) throws {
