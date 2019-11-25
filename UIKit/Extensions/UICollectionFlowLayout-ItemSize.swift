@@ -17,7 +17,7 @@ extension UICollectionViewFlowLayout {
     var size = collectionView.frame.width - (sectionInset.left + sectionInset.right)
     size -= CGFloat(nrOfColumns - 1) * minimumInteritemSpacing
     size /= CGFloat(nrOfColumns)
-    itemSize = CGSize(width: size, height: size)
+    itemSize = CGSize(width: Int(size), height: Int(size))
   }
 
 }
