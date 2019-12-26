@@ -21,20 +21,20 @@ extension UIAlertController {
 
 extension UIViewController {
     
-    func presentAlertWith(_ title : String?, message : String?, animated : Bool? = true, completion : (()->Void)? = nil) -> UIAlertController {
+    func presentAlert(_ title : String? = nil, message : String? = nil, animated : Bool? = true, completion : (()->Void)? = nil) -> UIAlertController {
         let alert = UIAlertController.alertController(title, message: message)
         present(alert, animated: animated!, completion: completion);
         return alert
     }
     
     /*Custom*/
-    func presentAlertInfo(_ title : String?, message : String?, animated : Bool? = true, completion : (()->Void)? = nil) -> UIAlertController{
-        let alert = self.presentAlertWith(title, message: message, animated: animated, completion: completion)
+    func presentAlertInfo(_ title : String? = nil, message : String? = nil, animated : Bool? = true, completion : (()->Void)? = nil) -> UIAlertController{
+        let alert = presentAlert(title, message: message, animated: animated, completion: completion)
         alert.addAction(UIAlertAction(title: NSLocalizedString("Dismiss", comment: "Dismiss"), style: .cancel, handler: nil))
         return alert
     }
     
-    func presentActionSheetWith(_ title : String?, message : String?, animated : Bool? = true, completion : (()->Void)? = nil) -> UIAlertController {
+    func presentActionSheet(_ title : String? = nil , message : String? = nil, animated : Bool? = true, completion : (()->Void)? = nil) -> UIAlertController {
         let alert = UIAlertController.actionSheetController(title, message: message)
         present(alert, animated: animated!, completion: completion);
         return alert
