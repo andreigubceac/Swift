@@ -48,7 +48,7 @@ class ConsoleViewController: UIViewController {
     }
     
     var textView : UITextView {
-        return view as! UITextView
+        return view as? UITextView ?? UITextView()
     }
     
     @objc private func clearAction(_ sender : AnyObject?) {

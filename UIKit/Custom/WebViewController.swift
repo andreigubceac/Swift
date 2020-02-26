@@ -9,9 +9,7 @@ import UIKit
 
 class WebViewController: UIViewController {
     var webView : UIWebView {
-        get {
-            return self.view as! UIWebView
-        }
+        return view as? UIWebView ?? UIWebView()
     }
     
     var url : URL? {
