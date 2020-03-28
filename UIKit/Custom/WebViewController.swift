@@ -5,18 +5,17 @@
 //  Copyright © 2016. All rights reserved.
 //
 
-import UIKit
+import WebKit
 
 class WebViewController: UIViewController {
-    var webView : UIWebView {
-        return view as? UIWebView ?? UIWebView()
+    var webView : WKWebView {
+        return view as? WKWebView ?? WKWebView()
     }
     
     var url : URL? {
         didSet {
-            if url != nil {
-                self.webView.loadRequest(URLRequest(url: url!))
-            }
+            guard let url = url else { return }
+            webView.load(URLRequest(url: url))
         }
     }
     
@@ -32,18 +31,11 @@ class WebViewController: UIViewController {
     }
     
     override func loadView() {
-        let webView = UIWebView(frame: UIScreen.main.bounds)
-        webView.scrollView.showsVerticalScrollIndicator = false
-        webView.scrollView.showsHorizontalScrollIndicator = false
-        webView.backgroundColor = UIColor.clear
-        webView.isOpaque = true
-        self.view = webView
+        view = WKWebView()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-        self.view.backgroundColor = UIColor.white
+        view.backgroundColor = UIColor.white
     }
 }
