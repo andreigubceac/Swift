@@ -8,8 +8,8 @@
 import Alamofire
 
 
-
-class AGRESTController : SessionManager {
+open class AGRESTController {
+    let session = Session()
     fileprivate var backgroundQueue = DispatchQueue(label: "BackgroundQueue", qos : DispatchQoS(qosClass: DispatchQoS.QoSClass.background, relativePriority: 0))
     typealias RESTResultBlock = (_ result: Swift.Result<Any?, Error>) -> Void
 
@@ -38,14 +38,7 @@ class AGRESTController : SessionManager {
         }
     }
 
-    init(serverTrustPolicyManager : ServerTrustPolicyManager? = nil) {
-        let configuration = URLSessionConfiguration.default
-        configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
-        super.init(configuration: configuration, delegate: SessionDelegate(), serverTrustPolicyManager: serverTrustPolicyManager)
-    }
-    
-    convenience init(baseUrl : String) {
-        self.init()
+    init(baseUrl : String) {
         self.baseUrl = baseUrl
     }
 
@@ -57,18 +50,14 @@ class AGRESTController : SessionManager {
     func request(_ url: URLConvertible, method: HTTPMethod = .get, parameters: Parameters? = nil, encoding: ParameterEncoding, headers: HTTPHeaders? = nil, resultBlock : @escaping RESTResultBlock ) -> Request {
         appendConcsoleLog("[\(dateFormatter.string(from: Date()))] Start <\(method)> \(url)\n {\(String(describing: parameters))}\n")
         var _headers = authorizeRequest()
-      for (key, value) in _headers ?? [:] {
-        if let value = headers?[value] {
-          _headers?.updateValue(value, forKey: key)
-        }
-      }
+        headers?.forEach { _headers?.add($0) }
 
         #if targetEnvironment(simulator)
         debugPrint(method.rawValue + ": " + (try! url.asURL().absoluteString))
         debugPrint("Params: " + (parameters?.description ?? ""))
         #endif
 
-        return request(url, method: method, parameters: parameters, encoding: encoding, headers: _headers).response(queue: backgroundQueue, completionHandler: {(dataResponse) in
+        return session.request(url, method: method, parameters: parameters, encoding: encoding, headers: _headers).response(queue: backgroundQueue, completionHandler: {(dataResponse) in
             if let statusCode = dataResponse.response?.statusCode, statusCode == 401 {
                 /*Session expired*/
                 self.appendConcsoleLog("End Session Invalid 401\n==================\n")
