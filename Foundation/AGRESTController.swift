@@ -9,14 +9,14 @@ import Alamofire
 
 
 open class AGRESTController {
-    let session = Session()
     fileprivate var backgroundQueue = DispatchQueue(label: "BackgroundQueue", qos : DispatchQoS(qosClass: DispatchQoS.QoSClass.background, relativePriority: 0))
     typealias RESTResultBlock = (_ result: Swift.Result<Any?, Error>) -> Void
 
     /*Auth*/
     fileprivate var username, password: String?
-    var baseUrl : String!
+    private let baseUrl: String
     var token   : String?
+    private let session: Session
 
     var dateFormatter: DateFormatter {
         return DateFormatter.sharedFormatter()
@@ -38,8 +38,9 @@ open class AGRESTController {
         }
     }
 
-    init(baseUrl : String) {
-        self.baseUrl = baseUrl
+    init(baseUrl : String, session: Session) {
+      self.baseUrl = baseUrl
+      self.session = session
     }
 
     func URLStringForMethod(_ methodString : String) -> URLConvertible {
@@ -91,6 +92,7 @@ open class AGRESTController {
                     }
                     catch {
                         debugPrint(error)
+                        debugPrint(String(data: data, encoding: .utf8) ?? "")
                     }
                     #endif
                     resultBlock(Swift.Result.success(data))
