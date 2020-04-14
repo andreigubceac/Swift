@@ -91,6 +91,7 @@ open class AGRESTController {
                     }
                     catch {
                         debugPrint(error)
+                        debugPrint(String(data: data, encoding: .utf8) ?? "")
                     }
                     #endif
                     resultBlock(Swift.Result.success(data))
