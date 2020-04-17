@@ -14,9 +14,9 @@ open class AGRESTController {
 
     /*Auth*/
     fileprivate var username, password: String?
-    private let baseUrl: String
+    let baseUrl: String
     var token   : String?
-    private let session: Session
+    let session: Session
 
     var dateFormatter: DateFormatter {
         return DateFormatter.sharedFormatter()
