@@ -9,22 +9,21 @@ import Foundation
 
 extension DateFormatter {
     
-    public class func sharedFormatter(with format: String? = "yyyy-MM-dd HH:mm", timeZone: TimeZone? = TimeZone.autoupdatingCurrent, locale: Locale? = Locale(identifier: "en_US_POSIX")) -> DateFormatter {
+    public class func sharedFormatter(format: String? = "yyyy-MM-dd HH:mm", timeZone: TimeZone? = TimeZone.autoupdatingCurrent, locale: Locale? = Locale(identifier: "en_US_POSIX")) -> DateFormatter {
         let indentifier = Thread.current.hash
         if let formatter = Thread.current.threadDictionary[indentifier] as? DateFormatter{
-          formatter.locale        = locale
-          formatter.dateFormat    = format
-          formatter.timeZone      = timeZone
+          formatter.locale = locale
+          formatter.dateFormat = format
+          formatter.timeZone = timeZone
           return formatter
-        }else{
-            let dateFormatter           = DateFormatter()
-            dateFormatter.locale        = locale
-            dateFormatter.dateFormat    = format
-            dateFormatter.timeZone      = timeZone
+        } else {
+            let dateFormatter = DateFormatter()
+            dateFormatter.locale = locale
+            dateFormatter.dateFormat = format
+            dateFormatter.timeZone = timeZone
             Thread.current.threadDictionary[indentifier] = dateFormatter
             return dateFormatter
         }
-        
     }
     
 }
