@@ -7,9 +7,12 @@
 
 import Alamofire
 
+public extension AGRESTController {
+    static let forceLogoutNotification = Notification.Name("AGRESTController.forceLogoutNotification")
+}
 
 open class AGRESTController {
-    fileprivate var backgroundQueue = DispatchQueue(label: "BackgroundQueue", qos : DispatchQoS(qosClass: DispatchQoS.QoSClass.background, relativePriority: 0))
+    private var backgroundQueue = DispatchQueue(label: "BackgroundQueue", qos : DispatchQoS(qosClass: DispatchQoS.QoSClass.background, relativePriority: 0))
     typealias RESTResultBlock = (_ result: Swift.Result<Any?, Error>) -> Void
 
     /*Auth*/
@@ -23,8 +26,8 @@ open class AGRESTController {
     }
     
     /*Developer*/
-    var logEnable   = false
-    fileprivate var _logString = String()
+    var isLogEnable = false
+    private var _logString = String()
     func logString() -> String {
         return _logString
     }
@@ -33,7 +36,7 @@ open class AGRESTController {
     }
     
     func appendConcsoleLog(_ text : String) {
-        if logEnable {
+        if isLogEnable {
             _logString.append(text)
         }
     }
@@ -47,8 +50,11 @@ open class AGRESTController {
         let urlString   = baseUrl + methodString
         return urlString
     }
+    private var retryLoginCount = 0
     @discardableResult
-    func request(_ url: URLConvertible, method: HTTPMethod = .get, parameters: Parameters? = nil, encoding: ParameterEncoding, headers: HTTPHeaders? = nil, resultBlock : @escaping RESTResultBlock ) -> Request {
+    func request(_ url: URLConvertible, method: HTTPMethod = .get, parameters: Parameters? = nil, encoding: ParameterEncoding, headers: HTTPHeaders? = nil, resultBlock : @escaping RESTResultBlock) -> Request? {
+        if retryLoginCount > 0 { return nil }
+        
         appendConcsoleLog("[\(dateFormatter.string(from: Date()))] Start <\(method)> \(url)\n {\(String(describing: parameters))}\n")
         var _headers = authorizeRequest()
         headers?.forEach { _headers?.add($0) }
@@ -58,32 +64,39 @@ open class AGRESTController {
         debugPrint("Params: " + (parameters?.description ?? ""))
         #endif
 
-        return session.request(url, method: method, parameters: parameters, encoding: encoding, headers: _headers).response(queue: backgroundQueue, completionHandler: {(dataResponse) in
+        return session.request(url, method: method, parameters: parameters, encoding: encoding, headers: _headers).response(queue: backgroundQueue, completionHandler: {[weak self] dataResponse in
+            guard let self = self else { return }
             if let statusCode = dataResponse.response?.statusCode, statusCode == 401 {
                 /*Session expired*/
                 self.appendConcsoleLog("End Session Invalid 401\n==================\n")
                 /*Call userSignIn method*/
-                self.autosignInRequest(request: dataResponse.request!, completion: { (result) in
-                  switch result {
-                  case .failure(let error):
-                    resultBlock(Swift.Result.failure(error))
-                  case .success(_):
-                    let _ = self.request(url, method: method, parameters: parameters, encoding: encoding, resultBlock: resultBlock)
-                  }
-                })
-            }
-            else {
+                if self.retryLoginCount < 3 {
+                    let loginCount = self.retryLoginCount
+                    self.retryLoginCount = 0
+                    self.autosignInRequest(request: dataResponse.request!, completion: { (result) in
+                      switch result {
+                      case .failure(let error):
+                        resultBlock(Swift.Result.failure(error))
+                      case .success(_):
+                        self.retryLoginCount = 0
+                        let _ = self.request(url, method: method, parameters: parameters, encoding: encoding, resultBlock: resultBlock)
+                      }
+                    })
+                    self.retryLoginCount = loginCount + 1
+                } else {
+                    self.retryLoginCount = 0
+                    NotificationCenter.default.post(name: AGRESTController.forceLogoutNotification, object: nil)
+                }
+            } else {
                 if let statusCode = dataResponse.response?.statusCode {
                     self.appendConcsoleLog("[\(self.dateFormatter.string(from: Date()))] End (\(statusCode)) \(url) ")
-                }
-                else {
+                } else {
                     self.appendConcsoleLog("[\(self.dateFormatter.string(from: Date()))] End \(url) ")
                 }
                 if let error = dataResponse.error {
                     self.appendConcsoleLog("\(error.localizedDescription)\n==================\n")
                     resultBlock(Swift.Result.failure(error))
-                }
-                else if let data = dataResponse.data {
+                } else if let data = dataResponse.data {
                     #if targetEnvironment(simulator)
                         debugPrint(url)
                     do {
@@ -96,8 +109,7 @@ open class AGRESTController {
                     }
                     #endif
                     resultBlock(Swift.Result.success(data))
-                }
-                else {
+                } else {
                     resultBlock(Swift.Result.success(dataResponse))
                 }
             }
@@ -108,8 +120,9 @@ open class AGRESTController {
                      url: URLConvertible,
                      parameters: Parameters? = nil,
                      encoding: ParameterEncoding  = URLEncoding.default,
-                     resultBlock : @escaping RESTResultBlock ) -> Request {
-        return request(url, method: method, parameters: parameters, encoding: encoding, resultBlock: { (result) in
+                     resultBlock : @escaping RESTResultBlock ) -> Request? {
+        return request(url, method: method, parameters: parameters, encoding: encoding, resultBlock: { [weak self] result in
+            guard let self = self else { return }
           switch result {
           case .failure(let error):
             resultBlock(Swift.Result.failure(error))

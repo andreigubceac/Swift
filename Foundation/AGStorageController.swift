@@ -8,7 +8,7 @@
 import Foundation
 
 
-class AGStorageController {
+open class AGStorageController {
   static let bundleIdentifier = Bundle.main.infoDictionary!["CFBundleIdentifier"] as? String ?? ""
   private let backgroundQueue = DispatchQueue(label: AGStorageController.bundleIdentifier + "Queue")
   typealias StoreResultBlock<T> = (_ result: Swift.Result<T, Error>, _ fromLocal: Bool) -> Void
