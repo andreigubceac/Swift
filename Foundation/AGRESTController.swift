@@ -79,6 +79,7 @@ open class AGRESTController {
                         resultBlock(Swift.Result.failure(error))
                       case .success(_):
                         self.retryLoginCount = 0
+                        let parameters = self.updateOnAutoSingFailed(parameters: parameters)
                         let _ = self.request(url, method: method, parameters: parameters, encoding: encoding, resultBlock: resultBlock)
                       }
                     })
@@ -155,6 +156,11 @@ open class AGRESTController {
     func authorizeRequest() -> HTTPHeaders? {
         /*Override this method*/
         return nil
+    }
+    
+    func updateOnAutoSingFailed(parameters: Parameters?) ->Parameters? {
+        // override
+        return parameters
     }
     
     /*APNs*/
