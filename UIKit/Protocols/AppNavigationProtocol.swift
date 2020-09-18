@@ -9,25 +9,22 @@ import UIKit
 
 protocol AppNavigationProtocol {
 
-    var topViewController : UIViewController { get }
+    var topViewController: UIViewController { get }
     
     func showWelcomeViewController(animated : Bool)
     func showHomeViewController(animated : Bool)
-    
 }
 
 extension AppNavigationProtocol {
     
     func topViewController(fromViewController : UIViewController) -> UIViewController {
         /*Default UIKit*/
-        if let vc = fromViewController.presentedViewController {
-            return self.topViewController(fromViewController: vc)
-        }
-        else if let vc = fromViewController as? UINavigationController {
-            return self.topViewController(fromViewController: vc.topViewController!)
-        }
-        else if let vc = fromViewController as? UITabBarController {
-            return self.topViewController(fromViewController: vc.selectedViewController!)
+        if let vc = fromViewController.presentedViewController, !vc.isBeingDismissed {
+            return topViewController(fromViewController: vc)
+        } else if let vc = fromViewController as? UINavigationController {
+            return topViewController(fromViewController: vc.topViewController!)
+        } else if let vc = fromViewController as? UITabBarController {
+            return topViewController(fromViewController: vc.selectedViewController!)
         }
         return fromViewController
     }
