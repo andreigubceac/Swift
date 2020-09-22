@@ -11,11 +11,9 @@ import UIKit
 extension UICollectionViewFlowLayout {
   
   func computeSquareItemSize(nrOfColumns: UInt = 1) {
-    guard let collectionView = collectionView else {
-      return
-    }
+    guard let collectionView = collectionView else { return }
     var size = collectionView.frame.width - (sectionInset.left + sectionInset.right)
-    size -= CGFloat(nrOfColumns - 1) * minimumInteritemSpacing
+    size -= CGFloat(nrOfColumns - 1) * (scrollDirection == .vertical ? minimumLineSpacing : minimumInteritemSpacing)
     size /= CGFloat(nrOfColumns)
     itemSize = CGSize(width: Int(size), height: Int(size))
   }
