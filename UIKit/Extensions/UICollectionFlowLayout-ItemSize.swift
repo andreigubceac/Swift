@@ -1,9 +1,7 @@
 //
 //  UICollectionFlowLayout-ItemSize.swift
-//  Jumppi
 //
 //  Created by Andrei Gubceac on 10/07/2019.
-//  Copyright © 2019 Pickapal Inc. All rights reserved.
 //
 
 import UIKit

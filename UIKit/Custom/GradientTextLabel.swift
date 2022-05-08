@@ -1,9 +1,7 @@
 //
 //  GradientTextLabel.swift
-//  Jumppi
 //
 //  Created by Andrei Gubceac on 4/19/20.
-//  Copyright © 2020 Pickapal Inc. All rights reserved.
 //
 
 import UIKit
