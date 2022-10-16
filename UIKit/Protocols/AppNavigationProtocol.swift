@@ -25,6 +25,8 @@ extension AppNavigationProtocol {
             return topViewController(fromViewController: vc.topViewController!)
         } else if let vc = fromViewController as? UITabBarController {
             return topViewController(fromViewController: vc.selectedViewController!)
+        } else if let vc = fromViewController as? UIPageViewController, let first = vc.viewControllers?.first {
+          return topViewController(fromViewController: first)
         }
         return fromViewController
     }
